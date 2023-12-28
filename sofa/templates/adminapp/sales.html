@@ -1,0 +1,295 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title itemprop="name">Order Invoice</title>
+
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+<style>
+.company-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px; /
+}
+
+.img-fluid {
+    width: 10%;
+    height: 10%;
+    max-width: 100%;
+    max-height: 100%;
+}
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #fff;
+    margin: 20mm;
+}
+
+.sales-container
+{
+    width: 100%;
+    max-width: 100%;
+}
+
+.sales {
+    background: #fff;
+    color: #666666;
+    border-radius: 2px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    padding: 20px;
+}
+
+h1
+{
+    text-align: center;
+}
+
+.report-section
+{
+    margin-bottom: 30px;
+}
+
+.sales h2 {
+    margin-top: 0;
+    line-height: 1em;
+}
+
+
+.sales table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.sales table th,
+.sales table td
+{
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+
+#pdfButton {
+    border-radius: 20px;
+    background-color: #bcbcbc;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin: 20px; /* Adjust as needed */
+}
+.back{
+    border-radius: 3px;
+    background-color: #088178;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px; /* Adjust as needed */
+    text-decoration:none;
+}
+.active{
+background-color:#088178 !important;
+}
+
+.not_active{
+    background-color:white !important;
+    color:green !important;
+}
+</style>
+</head>
+<body>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <center>
+            <div class="d-flex justify-content-center">
+                <a href="{% url 'current_year_sales' %}" class="btn btn-success mx-2 not_active">Year</a>
+                <a href="{% url 'sales' %}" class="btn btn-success mx-2 active">Week</a>
+                <a href="{% url 'today_sales' %}" class="btn btn-success mx-2 not_active">Day</a>
+            </div>
+            </center>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+
+<div class="container sales-container ">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="grid sales">
+                 <div class="grid-body">
+                    <div class="sale-title">
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h1>
+                                    Sales Report - This Week
+                            </div>
+                        </div>
+                     </div>
+                     <br>
+                     <!-- Company Logo Section -->
+                     <div class="company-logo">
+                         <img  src="{% static 'assets/images/sofa_logo.png' %}" alt="Company Logo" class="img-fluid">
+                     </div>
+                     
+                    <br> <hr> <br>
+                    
+                    <div class=" report-section">
+                    <h2>Sales Summary</h2>
+                    <p>Total Orders: {{ total_orders }}</p>
+                    <p>Success Orders: {{ success_orders }}</p>
+                     <p>Total Sales: ₹{{ total_sales|floatformat:2 }}/-</p>
+                    <p>Average Order Value: ₹{{ average_order_value|floatformat:2 }}</p>
+                </div>
+                     <br> <hr> <br>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                        <h2 >Product Performance</h2>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="line">
+                                        <th class="text-left"><strong>Product</strong></th>
+                                        <th class="text-right"> <strong>Quantity Sold</strong></th>
+                                        <th class="text-right"><strong>Revenue</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for sale in delivered_products %}
+                                        <tr>
+                                            <td>{{ sale.product__product_name }}</td>
+                                            <td class="text-right">{{ sale.total_quantity_sold }}</td>
+                                            <td class="text-right">₹{{ sale.total_revenue }} /-</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <br>
+                     <hr>
+                     <br>
+
+                    <div class="row">
+                    <div class="table-responsive col-md-12">
+                        <h2 >All Orders in this Week</h2><br>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Payment</th>
+                                    <th scope="col">Status</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in order_products %}
+                                <tr>
+                                    <td>{{order.order_number}}</td>
+                                    <td><b>{{order.user.username}}</b></td>
+                                    <td>{{order.user.email}}</td>
+                                    <td>₹{{order.order_total}}</td>
+                                    {% if order.orderproduct_set.exists %}
+                                        {% with first_order_product=order.orderproduct_set.first %}
+                                            <td>{{ first_order_product.payment.payment_method }}</td>
+                                        {% endwith %}
+                                    {% endif %}
+
+                                    <td>
+                                        {% if order.status == 'New' and not order.cancelled %}
+                                            <span class="badge rounded-pill alert-warning">Processing</span>
+                                        {% elif order.status == 'Cancelled' %}
+                                            <span class="badge rounded-pill alert-danger">Cancelled</span>
+                                        {% endif %}
+                                        {% if order.status == 'Delivered' %}
+                                            <span class="badge rounded-pill alert-info">Delivered</span>
+                                        {% endif %}
+                                        {% if order.status == 'Returned' %}
+                                            <span class="badge rounded-pill alert-primary">Returned</span>
+                                        {% endif %}
+                                    </td>
+
+
+                                </tr>
+                            {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                     <div class="mx-auto">
+                            {% if orders.paginator.num_pages > 1 %}
+                            <hr>
+                            <div class="text-center">
+                                {% for pg in orders.paginator.page_range %}
+                                <a href="?page={{pg}}" class="btn btn-sm page {% if orders.number == pg %} active {% endif %}">{{pg}}</a>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                            <br>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12 text-right">
+            <a href="{% url 'admin_home' %}" class="back">Back To Dashboard</a>
+            <button id="pdfButton">Download Report</button>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="{ 'admin/assets/js/vendors/bootstrap.bundle.min.js' }"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script>
+    document.getElementById("pdfButton").addEventListener("click", function () {
+        const salesContainer = document.querySelector(".sales-container");
+        const pdfOptions = {
+            filename: 'MonthSalesReport-{{end_date}}.pdf',
+            image: { type: 'jpeg', quality: 1.0 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().from(salesContainer).set(pdfOptions).save();
+    });
+</script>
+
+
+</body>
+</html>

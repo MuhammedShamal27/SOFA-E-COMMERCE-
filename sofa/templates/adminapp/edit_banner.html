@@ -1,0 +1,106 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block content %}
+
+{% comment %}
+<head>
+    <!-- ... existing head content ... -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+</head>
+{% endcomment %}
+<style>
+
+</style>
+
+
+{% if messages %}
+    {% for msg in messages %}
+        {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+            <div class="messages">
+                <div style="color: #cc0000;">
+                    {{ msg }}
+                </div>
+            </div>
+        {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="messages">
+                <div style="color: #cc0000;">
+                    {{ msg }}
+                </div>
+            </div>
+        {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="messages">
+                <div style="color: #00cc00;">
+                    {{ msg }}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Edit Banner</h2>
+            <p>Banner management</p>
+        </div>
+        <div>
+            <a href="{% url 'banner' %}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Add New Brand</a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <!-- 
+                <div class="col-lg-4 mb-lg-0 mb-15 me-auto">
+                    <input type="text" placeholder="Search..." class="form-control">
+                </div>
+                <div class="col-lg-2 col-6">
+                    <div class="custom_select">
+                        <select class="form-select select-nice">
+                            <option selected>Categories</option>
+                            <option>Technology</option>
+                            <option>Fashion</option>
+                            <option>Home Decor</option>
+                            <option>Healthy</option>
+                            <option>Travel</option>
+                            <option>Auto-car</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <input type="date" class="form-control" name="">
+                </div>
+                -->
+            </div>
+        </header> <!-- card-header end// -->
+        
+        <div class="card-body">
+            <div class="row gx-3">
+                <div class="col-6 form-container">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <img src="{{ banner.banner_img.url }}" alt="Current Banner Image" style="width:300px; height:300px;">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newBannerImage" class="form-label">New Banner Image</label>
+                            <input type="file" class="form-control" id="newBannerImage" name="image">
+                        </div>
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ banner.title }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subTitle" class="form-label">Sub Title</label>
+                            <input type="text" class="form-control" id="subTitle" name="sub_title" value="{{ banner.subtitle }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> <!-- row.// -->
+</section> <!-- content-main end// -->
+
+{% endblock content %}

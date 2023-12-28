@@ -1,0 +1,134 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+
+<head>
+    <style>
+        .btn.page.active {
+            background-color: #088178;
+            color: #fff;
+        }
+
+        .btn.page {
+            background-color: #fff; /* Set background color to white for non-active pages */
+            color: #28a745; /* Set text color to green */
+            border-color: #28a745; /* Set border color to green */
+        }
+    </style>
+    </head>
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Edit Categories </h2>
+                    <p>Add, edit or delete a category</p>
+                </div>
+                <div>
+                    <a href=""> Category</a>
+                    </a><input type="text"  placeholder="category" class="form-control bg-white">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Name</label>
+                                    <input type="text" value="{{category.category_name}}" class="form-control" id="product_name" name="category_name" />
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea  class="form-control" name="category_description"> {{category.category_desc}} </textarea>
+                                </div>
+
+                                 <div class="row">
+                                     {% if category.category_image  %}
+                                     <div>{{ category.category_image.name|truncatechars:13 }}</div>
+                                    <div class="col-md-3">
+                                            <img src="{{ category.category_image.url }}" alt="Image 1" style="width:50px; height:50px"  name="category_image">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-9">
+                                        <input class="form-control" type="file" name="category_image" style="margin-top:15px;">
+                                    </div>
+                                </div>
+
+
+                                <div class="d-grid">
+                                    <button class="btn btn-primary">Submit</button>
+                                </div>
+
+                            </form>
+
+
+
+                        </div>
+                        <div class="col-md-9">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            {% comment %} <th class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            </th> {% endcomment %}
+                                            <th>No.</th>
+                                            <th>Profile</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+
+<!--                                            <th>status</th>-->
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for cat in catogries %}
+                                        <tr>
+                                            {% comment %} <td class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            </td> {% endcomment %}
+
+                                            <td>{{forloop.counter}}</td>
+                                            <td >
+                                                 <img src="{{  cat.category_image.url  }}" alt="category_image" style="width:30px; height:30px; ">
+                                            </td>
+                                            <td><b>{{cat.category_name}}</b></td>
+                                            <td>{{cat.category_desc}}</td>
+
+                                                    <td class="col-lg-2 col-sm-2 col-4 col-status">
+                                                    <a  href="{% url 'edit_categories' cat.id  %}" style="color:red">Edit</a>
+                                                    </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+
+                                 <div class="mx-auto">
+                                        {% if categories.paginator.num_pages > 1 %}
+
+                                        <hr>
+                                        <div class="text-center">
+                                            {% for pg in catogries.paginator.page_range %}
+                                            <a href="?page={{pg}}" class="btn btn-sm page {% if categories.number == pg %} active {% endif %}">{{pg}}</a>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                        <br>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section> <!-- content-main end// -->
+        
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<style>
+    .btn.page.active {
+        background-color: #088178;
+        color: #fff;
+    }
+
+    .btn.page {
+        background-color: #fff; /* Set background color to white for non-active pages */
+        color: #28a745; /* Set text color to green */
+        border-color: #28a745; /* Set border color to green */
+    }
+</style>
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Coupons</h2>
+        </div>
+        <div>
+            <a href="{% url 'add_coupon' %}" class="btn btn-primary btn-sm rounded">Create new</a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header ">
+            <div class="row gx-3 d-flex justify-content-between">
+                <div class="col-lg-4 col-md-6 d-flex align-items-center">
+                    <form method="GET" action="{% url 'coupon' %}">
+                        <div class="d-flex">
+                            <input type="text" placeholder="Search..." class="form-control" name="search">
+                            <button type="submit" class="btn btn-primary ms-2" style="padding:8px; background-color:#536764; color:white;">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </header>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th>Coupon Code</th>
+                            <th>Description</th>
+                            <th>Minimum Amount</th>
+                            <th>Discount</th>
+                            <th>Valid From</th>
+                            <th>Valid To</th>
+                            <th scope="col" class=""> Action </th>
+                            <th scope="col" class=""> Edit </th>
+                            <th scope="col" class=""> View </th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        {% for coupon in coupons %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{ coupon.coupon_code }}</td>
+                            <td>{{ coupon.description }}</td>
+                            <td>₹{{ coupon.minimum_amount }}</td>
+                            <td>₹{{ coupon.discount }}</td>
+                            <td>{{ coupon.valid_from|date:"d-m-Y" }}</td>
+                            <td>{{ coupon.valid_to|date:"d-m-Y" }}</td>
+                            <td>
+                                {% if not coupon.un_list %}
+                                    <form method="post" action="{% url 'unlist_coupon' coupon.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="coupon_id" value="{{ coupon.id }}">
+                                        <button type="submit" class="btn btn-sm font-sm " style="color: #f44336;font-size:16px;">
+                                            <i class="material-icons md-delete_forever" style="font-size:18px;"></i> Unlist
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form method="post" action="{% url 'list_coupon' coupon.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="coupon_id" value="{{ coupon.id }}">
+                                        <button type="submit" class="btn btn-sm font-sm  rounded"  style="color: green;font-size:16px;">
+                                            <i class="material-icons md-restore"  style="font-size:18px;"></i> List
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a class="" href="{% url 'edit_coupons' coupon.id %}" style="color: #0050fc;font-size:16px;">
+                                    <i class="bx bx-edit-alt me-1"></i> Edit
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'coupon_details' coupon.id %}">
+                                    <i class="bx bx-edit-alt me-1"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="mx-auto">
+                {% if coupons.paginator.num_pages > 1 %}
+                    <hr>
+                    <div class="text-center">
+                        {% for pg in coupons.paginator.page_range %}
+                            <a href="?page={{pg}}" class="btn btn-sm page {% if coupons.number == pg %} active {% endif %}">{{pg}}</a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <br>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

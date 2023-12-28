@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
+        <div class="container">
+            <h1 class="page-title">My Account<span>Shop</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Account</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="dashboard">
+            <div class="container">
+                <div class="row">
+                    <aside class="col-md-4 col-lg-3">
+                        <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link " id="tab-dashboard-link" data-toggle="tab" href="#tab-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="true">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-address-link"  href="{% url 'user_profile' %}" role="tab" >Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Addresses</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-orders-link"  href="{% url 'user_order' %}" role="tab" >Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-wallet-link" href="{% url 'user_wallet' %}" role="tab">Wallet</a>
+                            </li>     
+                            <li class="nav-item">
+                                <a class="nav-link" id="tab-coupon-link" href="{% url 'user_coupon' %}" role="tab">Coupon</a>
+                            </li>                       
+                        </ul>
+                    </aside><!-- End .col-lg-3 -->
+
+                    <div class="col-md-8 col-lg-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade " id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
+                                <p>From your account dashboard you can view your <a href="#tab-orders" class="tab-trigger-link link-underline">recent orders</a>, manage your <a href="#tab-address" class="tab-trigger-link">shipping and billing addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.</p>
+                            </div><!-- .End .tab-pane -->
+
+                            <div class="tab-pane fade show active" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
+                                <div class="row">
+                                    {% for add in address %}
+                                        <div class="col-lg-6">
+                                            <div class="card card-dashboard">
+                                                <div class="card-body">
+                                                    <h3 class="card-title">Billing Address</h3><!-- End .card-title -->
+                                                    <p>
+                                                        <b>First_name:</b>{{add.first_name}}<br>
+                                                        <b>Last_name:</b>{{add.last_name}}<br>
+                                                        <b>Email:</b>{{add.email}}<br>
+                                                        <b>Address:</b>{{add.paddress}}<br>
+                                                        <b>Phone:</b>{{add.phone}}<br>
+                                                        <b>Locality:</b>{{add.locality}}<br>
+                                                        <b>City:</b>{{add.city}}<br>
+                                                        <b>State:</b>{{add.state}}<br>
+                                                        <b>Landmark:</b>{{add.landmark}}<br>
+                                                        <b>Pincode:</b>{{add.pincode}}<br>
+                                                    </p>
+                                                </div><!-- End .card-body -->
+                                            </div><!-- End .card-dashboard -->
+                                        </div><!-- End .col-lg-6 -->
+                                    {% endfor %}
+                                </div>
+                                    <form method="post" action="#">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label>First Name *</label>
+                                                        <input type="text" class="form-control" name="first_name" required>
+                                                    </div><!-- End .col-sm-6 -->
+
+                                                    <div class="col-sm-6">
+                                                        <label>Last Name *</label>
+                                                        <input type="text" class="form-control" name="last_name" required>
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+
+                                                <label>Email *</label>
+                                                <input type="text" class="form-control" name="email">
+
+                                                <label>Address *</label>
+                                                <input type="text" class="form-control" name="paddress" required>
+
+                                                <label>Phone *</label>
+                                                <input type="text" class="form-control" name="phone" required>
+
+                                                <label>locality *</label>
+                                                <input type="text" class="form-control"  name="locality" required>
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label>Town / City *</label>
+                                                        <input type="text" class="form-control" name="city" required>
+                                                    </div><!-- End .col-sm-6 -->
+
+                                                    <div class="col-sm-6">
+                                                        <label>State *</label>
+                                                        <input type="text" class="form-control" name="state" required>
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label>Landmark *</label>
+                                                        <input type="text" class="form-control" name="landmark" required>
+                                                    </div><!-- End .col-sm-6 -->
+
+                                                    <div class="col-sm-6">
+                                                        <label>Postcode / ZIP *</label>
+                                                        <input type="tel" class="form-control" name="pin" required>
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+                                                <button type="submit" class="btn btn-outline-primary-2">
+                                                    <span>SAVE </span>
+                                                    <i class="icon-long-arrow-right"></i>
+                                                </button>
+                                            </div><!-- End .summary -->
+                                        </div><!-- End .row -->
+                                    </form>
+                                {% comment %} </div><!-- End .row --> {% endcomment %}
+                            </div><!-- .End .tab-pane -->
+                        </div>
+                    </div><!-- End .col-lg-9 -->
+
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .dashboard -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+{% endblock content %}

@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+.messages{
+    padding:20px;
+    padding-left:12%;
+}
+.cart-discount{
+    margin:20px;
+}
+.address {
+    border: 1px solid black;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.payment {
+    border: 1px solid black;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+
+.payment input[type="radio"] {
+    margin-right: 5px;
+}
+
+
+.payment input[type="radio"]:checked + label {
+    color: yellow;
+    font-weight: bold;
+}
+
+.add_address {
+    margin-top: 30px;
+}
+p {
+    margin-bottom: 10px; 
+}
+</style>
+    
+    
+
+
+
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
+        <div class="container">
+            <h1 class="page-title">Place Order<span>for Shopping</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        {% if messages %}
+            {% for msg in messages %}
+                {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                    <div class="messages">
+                        <div style="color: #cc0000;">
+                            {{ msg }}
+                        </div>
+                    </div>
+                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="messages">
+                        <div style="color: #cc0000;">
+                            {{ msg }}
+                        </div>
+                    </div>
+                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="messages">
+                        <div style="color: #00cc00;">
+                            {{ msg }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        {% if order.discount <= 0 %}
+            <div class="cart-bottom">
+                <div class="cart-discount">
+                    <form method="post" action="{% url 'apply_coupon' %}" id="applyCouponForm">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" class="form-control" required placeholder="coupon code" name="coupon_code" id="couponCodeInput">
+                            <div class="input-group-append">
+                                <p><input type="hidden" name="order_id" class="form-control" value="{{ order.id }}"></p>
+                                <button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
+                            </div><!-- .End .input-group-append -->
+                        </div><!-- End .input-group -->
+                    </form>
+                </div><!-- End .cart-discount -->
+            {% else %}
+                <div class="panel-collapse collapse coupon_form " id="coupon">
+                    <div class="panel-body">
+                        <p class="mb-30 font-sm" style="color:red;">You already chose one coupon</p>
+                    </div>
+                </div>
+            {% endif %}
+            </div><!-- End .cart-bottom -->
+            <div class="checkout">
+                <div class="container">
+                    <form>
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <div class="address">
+                                    <h5>Address</h5><hr>
+                                    <p><b>Name:</b><tt>{{address.first_name}}{{address.last_name}}</tt><br>
+                                        <b>Email:</b><tt>{{address.email}}</tt><br>
+                                        <b>Address:</b><tt>{{address.paddress}},{{address.locality}}</tt><br>
+                                        <b>Pincode:</b><tt>{{address.pincode}}</tt><br>
+                                        <b>Place:</b><tt>{{address.city}},{{address.state}}</tt><br>
+                                        <b>Phone:</b><tt>{{address.phone}}</tt></p>
+                                </div>        
+                            </div><!-- End .col-lg-4 -->
+
+                            <div class="col-lg-4">
+                                <div class="payment">
+                                    <h5>Select Payment</h5><hr>
+                                    <label>
+                                        <input type="radio" name="payment_option" id="wallet" value="wallet">
+                                        Wallet
+                                    </label><br>
+
+                                    <label>
+                                        <input type="radio" name="payment_option" id="cash_on_delivery" value="cash_on_delivery">
+                                        Cash on Delivery
+                                    </label><br>
+
+                                    <label>
+                                        <input type="radio" name="payment_option" id="razor_pay" value="razor_pay">
+                                        Razor Pay
+                                    </label>
+                                </div>        
+                            </div><!-- End .col-lg-4 -->
+
+                            <hr>
+
+                            <a href="{% url 'index' %}" ><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                        </div><!-- End .row -->
+                        <aside class="col-lg-12">
+                            <div class="summary">
+                                <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+
+                                <table class="table table-summary">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Name</th>
+                                            <th>Quantity</th>
+                                            <th>Unit Price</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for order_product in cart_items %}
+                                            <tr>
+                                                <td class="product-image"><a href="#"><img src="{{ order_product.product.product_image1.url }}" alt="Product image" style="width: 50px; height: auto;"></a></td>
+                                                <td class="product-name"><a href="#">{{ order_product.product.product_name|truncatechars:15 }}</a></td>
+                                                <td class="product-quantity">{{ order_product.quantity }}</td>
+                                                <td class="product-unit-price">{{ order_product.product.offer_price }}</td>
+                                                <td class="product-total">₹{{ order_product.sub_total }}</td>
+                                            </tr>
+                                        {% endfor %}
+
+                                        <tr>
+                                            <td colspan="3" class="shipping-label">Shipping:</td>
+                                            <td></td>
+                                            <td class="shipping-value">Free shipping</td>
+                                        </tr>
+                                        <tr class="summary-total">
+                                            <td colspan="3">Total Paid:</td>
+                                            <td></td>
+                                            <td class="total-value">₹{{grand_total}}</td>
+                                        </tr><!-- End .summary-total -->
+                                    </tbody>
+                                </table><!-- End .table table-summary -->
+
+                                <div class="accordion-summary" id="accordion-payment"></div><!-- End .accordion -->
+                                <div>
+                                    <div class="col-sm-3">
+                                        <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                        <a href="{% url 'cash_on_delivery' order.id %}" id="cash-on-delivery-btn" style="display: none;" class="btn btn-primary btn-lg btn-block">Cash on Delivery Button</a>
+                                        <a id="rzp-button1" class="btn btn-primary btn-lg btn-block" style="display: none;" >Pay with Razorpay</a>
+                                        <a href="{% url 'wallet_pay' order.id %}" id="wallet-btn" class="btn btn-primary btn-lg btn-block" style="display: none;" >Pay with Wallet</a>
+                                    </div>
+                                </div>
+                            </div><!-- End .summary -->
+                        </aside><!-- End .col-lg-3 -->  
+                    </form>        
+                </div><!-- End .container -->
+            </div><!-- End .checkout -->
+        </div><!-- End .page-content -->
+    </main><!-- End .main -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const cashOnDeliveryBtn = document.getElementById('cash-on-delivery-btn');
+    const razorpayBtn = document.getElementById('rzp-button1');
+    const walletBtn = document.getElementById('wallet-btn');
+
+    document.querySelectorAll('input[name="payment_option"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (this.value === 'cash_on_delivery') {
+                cashOnDeliveryBtn.style.display = 'block';
+                razorpayBtn.style.display = 'none';
+                walletBtn.style.display='none'
+            } else if (this.value === 'razor_pay') {
+                cashOnDeliveryBtn.style.display = 'none';
+                razorpayBtn.style.display = 'block';
+                walletBtn.style.display='none'
+            }else if (this.value === 'wallet') {
+                cashOnDeliveryBtn.style.display = 'none';
+                razorpayBtn.style.display = 'none';
+                walletBtn.style.display='block';
+            }
+        });
+    });
+});
+
+</script>
+
+<script>
+var orderAmountInPaise = {{ order.order_total|floatformat:2 }} * 10;
+var roundedAmount = Math.round(orderAmountInPaise);
+  var options = {
+  	"key": "rzp_test_3vjh1FdAIP35KY",
+  	"amount": roundedAmount,
+  	"currency": "INR",
+  	"name": "Sofa",
+  	"description": "Purchase",
+  	"image": "https://example.com/your_logo",
+  	"order_id": "{{ payment.id }}",
+  	"handler": function (response) {
+  		alert("Payment successful!");
+  		var orderid = "{{ order.id }}"; // Get the order number
+  		window.location.href = '/cart/confirm_razorpay_payment/' + orderid + '/';
+  	},
+
+  	"theme": {
+  		"color": "#3399cc"
+  	}
+  };
+
+  var rzp1 = new Razorpay(options);
+  document.getElementById('rzp-button1').addEventListener('click', function (e) {
+  	rzp1.open();
+  	e.preventDefault();
+  });
+</script>
+
+{% endblock content %}

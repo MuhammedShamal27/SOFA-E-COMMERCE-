@@ -1,0 +1,304 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    .small-btn {
+      padding: 5px 15px;
+      
+    }
+  </style>  
+
+
+<form method='post' enctype="multipart/form-data" id="productForm">
+{% csrf_token %}
+{% if messages %}
+{% for msg in messages %}
+    {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+        <div class="messages">
+            <div style="color: #cc0000;">
+                {{ msg }}
+            </div>
+        </div>
+    {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="messages">
+            <div style="color: #cc0000;">
+                {{ msg }}
+            </div>
+        </div>
+    {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+        <div class="messages">
+            <div style="color: #00cc00;">
+                {{ msg }}
+            </div>
+        </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Product</h2>
+                    <div>
+                        
+                        <button class="btn btn-md rounded font-sm hover-up">Save</button>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label for="product_title" class="form-label">Product title</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="product_name" name='product_name'>
+                        </div>
+                        <div class="row gx-3">
+                            <div class="col-md-4  mb-3">
+                                <label for="product_sku" class="form-label">Material</label>
+                                <input type="text" placeholder="Type here" class="form-control" id="material" name='material'>
+                            </div>
+                            <div class="col-md-4  mb-3">
+                                <label for="product_color" class="form-label">Orginal price</label>
+                                <input type="text" placeholder="Type here" class="form-control" id="orginal_price" name='orginal_price'>
+                            </div>
+                            <div class="col-md-4  mb-3">
+                                <label for="product_size" class="form-label">Offer price</label>
+                                <input type="text" placeholder="Type here" class="form-control" id="offer_price" name='offer_price'>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_brand" class="form-label">Style</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="style" name='style'>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div>
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" rows="4" id='description' name='description'></textarea>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div id="imageContainer1">
+                            <label class="form-label">Image 1</label>
+                            <input class="form-control" type="file" id="image1" name="image1">
+                            <div id="imageWrapper1" style="display: none;">
+                                <img id="imagePreview1" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
+                                <button type="button" id="cropButton1" class="btn btn-primary small-btn">Crop</button>
+                            </div>
+                            <input type="hidden" name="crop_x1" id="cropX1">
+                            <input type="hidden" name="crop_y1" id="cropY1">
+                            <input type="hidden" name="crop_width1" id="cropWidth1">
+                            <input type="hidden" name="crop_height1" id="cropHeight1">
+                        </div>
+                        <div id="imageContainer2">
+                            <label class="form-label">Image 2</label>
+                            <input class="form-control" type="file" id='image2' name='image2'>
+                            <div id="imageWrapper2" style="display: none;">
+                                <img id="imagePreview2" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
+                                <button type="button" id="cropButton2" class="btn btn-primary small-btn">Crop</button>
+                            </div>
+                            <input type="hidden" name="crop_x2" id="cropX2">
+                            <input type="hidden" name="crop_y2" id="cropY2">
+                            <input type="hidden" name="crop_width2" id="cropWidth2">
+                            <input type="hidden" name="crop_height2" id="cropHeight2">
+                        </div>
+                        <div id="imageContainer3">
+                            <label class="form-label">Image 3</label>
+                            <input class="form-control" type="file" id='image3' name='image3'>
+                            <div id="imageWrapper3" style="display: none;">
+                                <img id="imagePreview3" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
+                                <button type="button" id="cropButton3" class="btn btn-primary small-btn">Crop</button>
+                            </div>
+                            <input type="hidden" name="crop_x3" id="cropX3">
+                            <input type="hidden" name="crop_y3" id="cropY3">
+                            <input type="hidden" name="crop_width3" id="cropWidth3">
+                            <input type="hidden" name="crop_height3" id="cropHeight3">
+                        </div>
+                        <div id="imageContainer4">
+                            <label class="form-label">Image 4</label>
+                            <input class="form-control" type="file" id='image4' name='image4'>
+                            <div id="imageWrapper4" style="display: none;">
+                                <img id="imagePreview4" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
+                                <button type="button" id="cropButton4" class="btn btn-primary small-btn">Crop</button>
+                            </div>
+                            <input type="hidden" name="crop_x4" id="cropX4">
+                            <input type="hidden" name="crop_y4" id="cropY4">
+                            <input type="hidden" name="crop_width4" id="cropWidth4">
+                            <input type="hidden" name="crop_height4" id="cropHeight4">
+                        </div>
+                        <div id="imageContainer5">
+                            <label class="form-label">Image 5</label>
+                            <input class="form-control" type="file" id='image5' name='image5'>
+                            <div id="imageWrapper5" style="display: none;">
+                                <img id="imagePreview5" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
+                                <button type="button" id="cropButton5" class="btn btn-primary small-btn">Crop</button>
+                            </div>
+                            <input type="hidden" name="crop_x5" id="cropX5">
+                            <input type="hidden" name="crop_y5" id="cropY5">
+                            <input type="hidden" name="crop_width5" id="cropWidth5">
+                            <input type="hidden" name="crop_height5" id="cropHeight5">
+                        </div>
+                    
+                    </div>
+                </div> <!-- card end// -->
+                
+            </div>
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label class="form-label">Quantity</label>
+                            <input type="text" placeholder="Type here" class="form-control" id='quantity' name='quantity'>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Seating capacity</label>
+                            <input type="text" placeholder="Type here" class="form-control" id='seating' name='seating'>
+                        </div>
+                        
+                        <hr>
+                        <h5 class="mb-3">Categories</h5>
+                        <form action=""></form>
+                        {% for cat in categories %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='category' value="{{cat.id}}" id="product-cat">
+                                <label class="form-check-label" for="product-cat"> {{cat.category_name}} </label> 
+                            </div>
+                        {% endfor %}  
+                        
+                        <hr>
+
+                        <h5 class="mb-3">Color</h5>
+                        <form action=""></form>
+                        
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Green" >
+                                <label class="form-check-label" for="product-cat"> Green </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Red" >
+                                <label class="form-check-label" for="product-cat"> Red </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Blue" >
+                                <label class="form-check-label" for="product-cat"> Blue </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Grey" >
+                                <label class="form-check-label" for="product-cat"> Grey </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Pink" >
+                                <label class="form-check-label" for="product-cat"> Pink </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Brown" >
+                                <label class="form-check-label" for="product-cat"> Brown </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Black" >
+                                <label class="form-check-label" for="product-cat"> Black </label> 
+                            </div> 
+                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Purple" >
+                                <label class="form-check-label" for="product-cat"> Purple </label> 
+                            </div>
+
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+        </div>  
+    </section>
+</form>
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Add this script to your HTML file -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.getElementById('productForm');
+        var croppers = [];
+
+        function initializeCropper(imageIndex) {
+            var input = document.getElementById('image' + imageIndex);
+            var cropButton = document.getElementById('cropButton' + imageIndex);
+            var imageContainer = document.getElementById('imageContainer' + imageIndex);
+            var imageWrapper = document.getElementById('imageWrapper' + imageIndex);
+
+            var cropper;
+
+            input.addEventListener('change', function (e) {
+                var file = e.target.files[0];
+                var reader = new FileReader();
+
+                reader.onload = function (event) {
+                    // Show the image container
+                    imageContainer.style.display = 'block';
+
+                    // Show the image wrapper
+                    imageWrapper.style.display = 'block';
+
+                    var image = document.getElementById('imagePreview' + imageIndex);
+                    image.src = event.target.result;
+
+                    // Set up Cropper.js after the image has loaded
+                    image.onload = function () {
+                        croppers[imageIndex] = new Cropper(image, {
+                            aspectRatio: 16 / 9,  // Set your desired aspect ratio
+                            crop: function (event) {
+                                // Update hidden input fields with cropping data
+                                document.getElementById('cropX' + imageIndex).value = event.detail.x;
+                                document.getElementById('cropY' + imageIndex).value = event.detail.y;
+                                document.getElementById('cropWidth' + imageIndex).value = event.detail.width;
+                                document.getElementById('cropHeight' + imageIndex).value = event.detail.height;
+                            }
+                        });
+                    };
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            cropButton.addEventListener('click', function () {
+                // Trigger manual crop
+                croppers[imageIndex].crop();
+
+                // Hide the image wrapper
+                imageWrapper.style.display = 'none';
+            });
+        }
+
+        // Initialize croppers for each image
+        for (var i = 1; i <= 5; i++) {
+            initializeCropper(i);
+        }
+
+        form.addEventListener('submit', function () {
+            // Do additional form validation if needed
+            // Submit the form
+            form.submit();
+        });
+    });
+</script>
+
+
+{% endblock content %}

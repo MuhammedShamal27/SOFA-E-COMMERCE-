@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+.address {
+    border: 1px solid black;
+    width: 100%;
+    padding: 10px; /* Added padding for better appearance */
+    border-radius: 10px;
+    margin-bottom:10px;
+    }
+
+/* Optional: Style for the radio buttons */
+.address input[type="radio"] {
+margin-right: 5px;
+}
+
+.add_address{
+    margin-top:30px;
+}
+</style>
+
+
+
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
+        <div class="container">
+            <h1 class="page-title">Checkout<span>Shop</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    <div class="page-content">
+        <div class="checkout">
+            <div class="container">
+                <div class="checkout-discount">
+                    {% comment %} <form action="#">
+                        <input type="text" class="form-control" required id="checkout-discount-input">
+                        <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
+                    </form> {% endcomment %}
+                </div><!-- End .checkout-discount -->
+
+                <p class="add_address">
+                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                      Add New Address
+                    </a>                                
+                  </p>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <form method="post" action="{% url 'checkout_address' user.id %}">
+                            {% csrf_token %}
+                            <h2 class="checkout-title">Billing Details</h2>
+                            
+                            <div class="row">
+                                
+                                <div class="col-sm-6">
+                                    <label>First Name *</label>
+                                    <input type="text" class="form-control" name="first_name" required>
+                                </div><!-- End .col-sm-6 -->
+
+                                <div class="col-sm-6">
+                                    <label>Last Name *</label>
+                                    <input type="text" class="form-control" name="last_name" required>
+                                </div><!-- End .col-sm-6 -->
+                            </div><!-- End .row -->
+
+                            <label>Email *</label>
+                            <input type="text" class="form-control" name="email">
+
+                            <label>Address *</label>
+                            <input type="text" class="form-control" name="paddress" required>
+
+                            <label>Phone *</label>
+                            <input type="text" class="form-control" name="phone" required>
+                            
+
+                            <label>locality *</label>
+                            <input type="text" class="form-control" name="locality" required>
+                            
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label>Town / City *</label>
+                                    <input type="text" class="form-control" name="city" required>
+                                </div><!-- End .col-sm-6 -->
+
+                                <div class="col-sm-6">
+                                    <label>State *</label>
+                                    <input type="text" class="form-control" name="state" required>
+                                </div><!-- End .col-sm-6 -->
+                            </div><!-- End .row -->
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label>Landmark *</label>
+                                    <input type="text" class="form-control" name="landmark" required>
+                                </div><!-- End .col-sm-6 -->
+
+                                <div class="col-sm-6">
+                                    <label>Postcode / ZIP *</label>
+                                    <input type="tel" class="form-control" name="pin" required>
+                                </div><!-- End .col-sm-6 -->
+                            </div><!-- End .row -->
+                            
+                            <button type="submit" class="btn btn-outline-primary-2">
+                                <span>SAVE </span>
+                            <i class="icon-long-arrow-right"></i>
+                            </button>
+
+                            
+                        </div>
+                    </div>
+                 </form>
+                 <hr>
+                <form method='post' action="{% url 'place_order' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-4">
+
+                            {% for address in address_list %}
+                            <div class="address">
+                                <label>
+                                  <input type="radio" name="default_address" value="{{address.id}}" {% if address.is_default %}checked{% endif %}>
+                                  {% if address.is_default %} Address{% endif %}
+                  
+                                </label>
+                            
+                                <p>{{address.first_name}}{{address.last_name}},
+                                    <br>{{address.email}},
+                                    <br>{{address.paddress}},{{address.locality}},{{address.pincode}},
+                                    <br>{{address.city}},{{address.state}},{{address.phone}}</p>
+                            </div> 
+                            {% endfor %}
+
+                                
+                        </div><!-- End .col-lg-9 -->
+                        <aside class="col-lg-8">
+                            <div class="summary">
+                                <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+
+                                <table class="table table-summary">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Name</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for cart_item in cart_items %}
+                                        <tr>
+                                            <td><img src="{{cart_item.product.product_image1.url}}" alt="Product image" style="width: 50px; height: 50px;"></td>
+                                            <td><a href="#">{{cart_item.product.product_name|truncatechars:35}}</a></td>
+                                            <td>{{cart_item.quantity}}</td>
+                                            <td>{{cart_item.sub_total}}</td>
+                                        </tr>
+                                        {% endfor %}
+
+                                        <tr class="summary-subtotal">
+                                            <td>Subtotal:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>₹{{total}}</td>
+                                        </tr><!-- End .summary-subtotal -->
+                                        <tr>
+                                            <td>Shipping:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Free shipping</td>
+                                        </tr>
+                                        <tr class="summary-total">
+                                            <td>Total:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>₹{{total}}</td>
+                                        </tr><!-- End .summary-total -->
+                                    </tbody>
+                                </table><!-- End .table table-summary -->
+
+                                <div class="accordion-summary" id="accordion-payment">
+                                    {% comment %} <div class="card">
+                                        <div class="card-header" id="heading-1">
+                                            <h2 class="card-title">
+                                                <a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+                                                    Direct bank transfer
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
+                                            <div class="card-body">
+                                                Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card --> {% endcomment %}
+
+                                    
+
+                                    {% comment %} <div class="card">
+                                        <div class="card-header" id="heading-3">
+                                            <h2 class="card-title">
+                                                <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+                                                    Cash on delivery
+                                                </a>
+                                            </h2>
+                                        </div><!-- End .card-header -->
+                                        <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
+                                            <div class="card-body"> the cash will be colected from you at the time of delivery
+                                            </div><!-- End .card-body -->
+                                        </div><!-- End .collapse -->
+                                    </div><!-- End .card --> {% endcomment %}
+
+                                    
+
+                                    
+                                </div><!-- End .accordion -->
+                                <div class="col-sm-4">
+                                    <center>
+                                        <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block" style="padding: 10px;">
+                                            <span class="btn-text">Proceed to Checkout</span>
+                                            <span class="btn-hover-text">Proceed to Checkout</span>
+                                        </button>
+                                    </center>
+                                </div><!-- End .col-sm-6 -->
+                                
+                            </div><!-- End .summary -->
+                        </aside><!-- End .col-lg-3 -->
+                    </div><!-- End .row -->
+                </form>
+            </div><!-- End .container -->
+        </div><!-- End .checkout -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+
+
+{% endblock content %}

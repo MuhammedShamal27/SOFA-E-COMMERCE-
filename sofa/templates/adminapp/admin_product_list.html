@@ -1,0 +1,160 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block content %}
+
+<head>
+    <style>
+        .btn.page.active {
+            background-color: #088178;
+            color: #fff;
+        }
+
+        .btn.page {
+            background-color: #fff; /* Set background color to white for non-active pages */
+            color: #28a745; /* Set text color to green */
+            border-color: #28a745; /* Set border color to green */
+        }
+    </style>
+</head>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Products List</h2>
+            <p>This is the product list page.</p>
+        </div>
+        <div>
+            {% comment %} <a href="#" class="btn btn-light rounded font-md">Export</a>
+            <a href="#" class="btn btn-light rounded  font-md">Import</a> {% endcomment %}
+            <a href="{% url 'add_product' %}" class="btn btn-primary btn-sm rounded">Create new</a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row align-items-center">
+                {% comment %} <div class="col col-check flex-grow-0">
+                    <div class="form-check ms-2">
+                        <input class="form-check-input" type="checkbox" value="">
+                    </div>
+                </div> {% endcomment %}
+                <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                    {% comment %} <form method="get" action="{% url 'admin_product_list' %}" class="d-inline">
+                        {% csrf_token %}
+                        <select class="form-select" name="selected_category">
+                            <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if category.id == selected_category|default:"" %}selected{% endif %}>
+                                    {{ category.category_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Filter</button>
+                    </form> {% endcomment %}
+                    
+                </div>
+                <div class="col-md-2 col-6">
+                    {% comment %} <input type="date" value="02.05.2021" class="form-control"> {% endcomment %}
+                </div>
+                <div class="col-md-2 col-6">
+                    {% comment %} <select class="form-select">
+                        <option selected>Status</option>
+                        <option>Active</option>
+                        <option>Disabled</option>
+                        <option>Show all</option>
+                    </select> {% endcomment %}
+                </div>
+            </div>
+        </header> <!-- card-header end// -->
+        <div class="card-body">
+            
+            {% for product in products %}
+            <article class="itemlist">
+                <div class="row align-items-center">
+                    <div class="col col-check flex-grow-0">
+                        <div class="form-check">
+                            <h6 class="mb-0">{{forloop.counter}}</h6>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                        <a class="itemside" href="#">
+                            <div class="left">
+                                <img src="{{product.product_image1.url}}" class="img-sm img-thumbnail" alt="Item">
+                            </div>
+                            <div class="info">
+                                <h6 class="mb-0">{{product.product_name}}</h6>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>{{product.quantity}}</span> </div>
+                    <div class="col-lg-2 col-sm-2 col-4 col-status">
+                        {% if not product.soft_delete %}
+                        <span class="badge rounded-pill alert-success">Active</span>
+                        {% else %}
+                        <span class="badge rounded-pill alert-danger">Disabled</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-lg-1 col-sm-2 col-4 col-date">
+                        <span>{{product.created_on}}</span>
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                        <a href="{% url 'edit_products' product.id %}" class="btn btn-sm font-sm rounded btn-brand">
+                            <i class="material-icons md-edit"></i> Edit
+                        </a>
+                        {% comment %} <a href="#" class="btn btn-sm font-sm btn-light rounded">
+                            <i class="material-icons md-delete_forever"></i> Delete
+                        </a> {% endcomment %}
+                    
+                        {% if not product.soft_delete %}
+                            <form method="post" action="{% url 'soft_delete_product' product.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <button type="submit" class="btn btn-sm font-sm " style="background-color: #f44336; margin-left:10px;">
+                                    <i class="material-icons md-delete_forever"></i> Delete
+                                </button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{% url 'undo_soft_delete_product' product.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <button type="submit" class="btn btn-sm font-sm btn-success rounded" style=" margin-left:10px; padding-left:18px;">
+                                    <i class="material-icons md-restore"></i> Undo
+                                </button>
+                            </form>
+                        {% endif %}
+                    
+                    </div>
+                </div> <!-- row .// -->
+            </article> <!-- itemlist  .// -->
+            {% endfor %}
+            
+            
+        
+        
+        </div> <!-- card-body end// -->
+    </div> <!-- card end// -->
+    <div class="pagination-area mt-30 mb-50">
+
+        {% if products.paginator.num_pages > 1 %}
+
+        <hr>
+        <div class="text-center">
+            {% for pg in products.paginator.page_range %}
+            <a href="?page={{pg}}" class="btn btn-sm page {% if products.number == pg %} active {% endif %}">{{pg}}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% comment %} <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                <li class="page-item"><a class="page-link" href="#">02</a></li>
+                <li class="page-item"><a class="page-link" href="#">03</a></li>
+                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+            </ul>
+        </nav> {% endcomment %}
+    </div>
+</section> <!-- content-main end// -->
+
+
+{% endblock content %}

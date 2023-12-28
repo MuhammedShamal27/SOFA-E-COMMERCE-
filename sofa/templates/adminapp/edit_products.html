@@ -1,0 +1,226 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block content %}
+
+
+<form method="post" action="{% url 'edit_products' p_id=product.id %}" enctype="multipart/form-data">
+
+{% csrf_token %}
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Edit Product</h2>
+                    <div>
+                        {% comment %} <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> {% endcomment %}
+                        <button type="submit" class="btn btn-md rounded font-sm hover-up">Save</button>
+                    </div>
+                </div>
+            </div>
+            
+            {% if messages %}
+            {% for msg in messages %}
+                {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                    <div class="messages">
+                        <div style="color: #cc0000;">
+                            {{ msg }}
+                        </div>
+                    </div>
+                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="messages">
+                        <div style="color: #cc0000;">
+                            {{ msg }}
+                        </div>
+                    </div>
+                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="messages">
+                        <div style="color: #00cc00;">
+                            {{ msg }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label for="product_title" class="form-label">Product title</label>
+                            <input type="text" placeholder="Type here" value={{product.product_name}} class="form-control" id="product_name" name='product_name'>
+                        </div>
+                        <div class="row gx-3">
+                            <div class="col-md-4  mb-3">
+                                <label for="product_sku" class="form-label">Material</label>
+                                <input type="text" placeholder="Type here" value={{product.material}} class="form-control" id="material" name='material'>
+                            </div>
+                            <div class="col-md-4  mb-3">
+                                <label for="product_color" class="form-label">Orginal price</label>
+                                <input type="text" placeholder="Type here" value={{product.orginal_price}} class="form-control" id="orginal_price" name='orginal_price'>
+                            </div>
+                            <div class="col-md-4  mb-3">
+                                <label for="product_size" class="form-label">Offer price</label>
+                                <input type="text" placeholder="Type here"  value={{product.offer_price}} class="form-control" id="offer_price" name='offer_price'>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_brand" class="form-label">Style</label>
+                            <input type="text" placeholder="Type here" value={{product.style}} class="form-control" id="style" name='style'>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div>
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" value={{product.description}} rows="4" id='description' name='description'>{{product.description}}</textarea>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div>
+                            <label class="form-label">Images</label>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    {% if product.product_image1  %}
+                                        <div>{{ product.product_image1.name|truncatechars:13 }}</div>
+                                        <img src="{{ product.product_image1.url }}" alt="Image 1" style="width:50px; height:50px">
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="file" name="image1" style="margin-top:15px;">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    {% if product.product_image2  %}
+                                        <div>{{ product.product_image2.name|truncatechars:13 }}</div>
+                                        <img src="{{ product.product_image2.url }}" alt="Image 2" style="width:50px; height:50px">
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="file" name="image2" style="margin-top:15px;">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    {% if product.product_image3  %}
+                                        <div>{{ product.product_image3.name|truncatechars:13 }}</div>
+                                        <img src="{{ product.product_image3.url }}" alt="Image 3" style="width:50px; height:50px">
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="file" name="image3" style="margin-top:15px;">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    {% if product.product_image4  %}
+                                        <div>{{ product.product_image4.name|truncatechars:13 }}</div>
+                                        <img src="{{ product.product_image4.url }}" alt="Image 4" style="width:50px; height:50px">
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="file" name="image4" style="margin-top:15px;">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    {% if product.product_image5  %}
+                                        <div>{{ product.product_image5.name|truncatechars:13 }}</div>
+                                        <img src="{{ product.product_image5.url }}" alt="Image 5" style="width:50px; height:50px">
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="file" name="image5" style="margin-top:15px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+                
+            </div>
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label class="form-label">Quantity</label>
+                            <input type="text" placeholder="Type here" value={{product.quantity}} class="form-control" id='quantity' name='quantity'>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Seating capacity</label>
+                            <input type="text" placeholder="Type here" value={{product.seating}} class="form-control" id='seating' name='seating'>
+                            {% comment %} <select class="form-select">
+                                <option>Published</option>
+                                <option>Draft</option>
+                            </select> {% endcomment %}
+                        </div>
+                        
+                        <hr>
+                        <h5 class="mb-3">Categories</h5>
+                        <form action=""></form>
+                        {% for cat in category_all %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='category' value="{{cat.id}}" id="product-cat" id="category-{{cat.id}}" {% if cat.id == product.category.id %}checked{% endif %}>
+                                <label class="form-check-label" for="product-cat"> {{cat.category_name}} </label> 
+                            </div>
+                        {% endfor %}  
+                        
+                        <hr>
+
+                        <h5 class="mb-3">Color</h5>
+                        <form action=""></form>
+                        
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Green" {% if 'Green' in product.colors %} checked {% endif %} >
+                                <label class="form-check-label" for="product-cat"> Green </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Red" {% if 'Red' in product.colors %} checked {% endif %}>
+                                <label class="form-check-label" for="product-cat"> Red </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Blue" {% if 'Blue' in product.colors %} checked {% endif %}>
+                                <label class="form-check-label" for="product-cat"> Blue </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Grey" {% if 'Grey' in product.colors %} checked {% endif %} >
+                                <label class="form-check-label" for="product-cat"> Grey </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Pink" {% if 'Pink' in product.colors %} checked {% endif %} >
+                                <label class="form-check-label" for="product-cat"> Pink </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Brown" {% if 'Brown' in product.colors %} checked {% endif %} >
+                                <label class="form-check-label" for="product-cat"> Brown </label> 
+                            </div> 
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name='colors' value="Black" {% if 'Black' in product.colors %} checked {% endif %} >
+                                <label class="form-check-label" for="product-cat"> Black </label> 
+                            </div> 
+
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+        </div>  
+    </section>
+</form>
+
+
+
+{% endblock content %}

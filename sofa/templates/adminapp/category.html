@@ -1,0 +1,149 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block content %}
+
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Categories </h2>
+                    <p>Add, edit or delete a category</p>
+                </div>
+                <div>
+                    
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+
+                            <form method="post" action="{% url 'category' %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% if messages %}
+                                                {% for msg in messages %}
+                                                    {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                                                        <div class="messages">
+                                                            <div style="color: #cc0000;">
+                                                                {{ msg }}
+                                                            </div>
+                                                        </div>
+                                                    {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                                                        <div class="messages">
+                                                            <div style="color: #cc0000;">
+                                                                {{ msg }}
+                                                            </div>
+                                                        </div>
+                                                    {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                                                        <div class="messages">
+                                                            <div style="color: #00cc00;">
+                                                                {{ msg }}
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                            <br>
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Name</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_name" name="category_name" />
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" class="form-control" name="category_description"></textarea>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="product_slug" class="form-label">Image</label>
+                                    <input class="form-control" type="file"  name="category_image">
+                                </div>
+
+
+                                <div class="d-grid">
+                                    <button class="btn btn-primary">Create category</button>
+                                </div>
+                            </form>
+
+
+
+                        </div>
+                        <div class="col-md-9">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            {% comment %} <th class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            </th> {% endcomment %}
+                                            <th>No.</th>
+                                            <th>Profile</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+
+                                            <th>Status</th>
+                                            <th class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for cat in categories %}
+                                        <tr>
+                                            {% comment %} <td class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            </td> {% endcomment %}
+
+                                            <td>{{forloop.counter}}</td>
+                                            <td >
+                                                 <img src="{{  cat.category_image.url  }}" alt="category image" style="width:30px; height:30px; ">
+                                            </td>
+                                            <td><b>{{cat.category_name|truncatechars:10}}</b></td>
+                                            <td>{{cat.category_desc}}</td>
+
+                                            <td>
+                                               {% if not cat.is_soft_delete %}
+                                                <span class="badge rounded-pill alert-success">Active</span>
+                                                {% else %}
+                                                <span class="badge rounded-pill alert-danger">Disabled</span>
+                                                {% endif %}
+
+                                            </td>
+                                            <td class="text-end">
+                                                <div class="dropdown">
+                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                    <div class="dropdown-menu">
+                                                        {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}
+                                                        <a class="dropdown-item" href="{% url 'edit_categories' cat.id %}">Edit info</a>
+
+                                                        {% if not cat.is_soft_delete %}
+                                                        
+                                                            <form method="post" action="{% url 'soft_delete' cat.id %}" class="d-inline">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="category_id" value="{{ cat.id }}">
+                                                                <button type="submit" class="dropdown-item text-danger">Delete</button>
+                                                            </form>
+                                                        {% else %}
+                                                            <form method="post" action="{% url 'undo_soft_delete' cat.id %}" class="d-inline">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="category_id" value="{{ cat.id }}">
+                                                                <button type="submit" class="dropdown-item text-success">Undo Delete</button>
+                                                            </form>
+                                                        {% endif %}
+
+                                                    </div>
+                                                </div> <!-- dropdown //end -->
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section> <!-- content-main end// -->
+{% endblock %}

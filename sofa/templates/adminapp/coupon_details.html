@@ -1,0 +1,35 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="card col-lg-11 p-5 m-5">
+            <h2 class="h3">Coupon Details</h2>
+            <p><strong>Coupon Code:</strong> {{ coupon.coupon_code }}</p>
+            <p><strong>Description:</strong> {{ coupon.description }}</p>
+            <p><strong>Valid from:</strong> {{ coupon.valid_from }}</p>
+            <p><strong>Valid to:</strong> {{ coupon.valid_to }}</p>
+            <br>
+
+            {% if is_expired %}
+                <p class="text-danger h5"><strong>This coupon has expired.</strong></p>
+            {% else %}
+                <p class="text-success h5"><strong>This coupon is still valid.</strong></p>
+            {% endif %}
+        </div>
+
+        <div class="card col-lg-11 m-5 p-5">
+            <h3 class="h4">Users who used this coupon:</h3>
+            <ul class="users-list">
+                {% for user_coupon in used_users %}
+                    <li class="h5">{{ forloop.counter }}) {{ user_coupon.user.username }}</li>
+                {% empty %}
+                    <li class="no-users">No users have used this coupon yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

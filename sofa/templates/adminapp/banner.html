@@ -1,0 +1,142 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% block content %}
+
+{% comment %}
+<head>
+    <!-- ... existing head content ... -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+</head>
+{% endcomment %}
+<style>
+    .banner-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .banner-card .card-img-top {
+        height: 200px; /* Set your desired height for the images */
+        object-fit: cover; /* Ensure the image covers the entire space */
+    }
+
+    .banner-card .card-body {
+        flex: 1;
+    }
+
+    .form-container {
+        margin-bottom: 20px; /* Adjust the margin as needed */
+    }
+</style>
+
+
+{% if messages %}
+    {% for msg in messages %}
+        {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+            <div class="messages">
+                <div style="color: #cc0000;">
+                    {{ msg }}
+                </div>
+            </div>
+        {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="messages">
+                <div style="color: #cc0000;">
+                    {{ msg }}
+                </div>
+            </div>
+        {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="messages">
+                <div style="color: #00cc00;">
+                    {{ msg }}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Banner</h2>
+            <p>Banner management</p>
+        </div>
+        <div>
+            
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <div class="row gx-3">
+                <!-- 
+                <div class="col-lg-4 mb-lg-0 mb-15 me-auto">
+                    <input type="text" placeholder="Search..." class="form-control">
+                </div>
+                <div class="col-lg-2 col-6">
+                    <div class="custom_select">
+                        <select class="form-select select-nice">
+                            <option selected>Categories</option>
+                            <option>Technology</option>
+                            <option>Fashion</option>
+                            <option>Home Decor</option>
+                            <option>Healthy</option>
+                            <option>Travel</option>
+                            <option>Auto-car</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <input type="date" class="form-control" name="">
+                </div>
+                -->
+            </div>
+        </header> <!-- card-header end// -->
+        
+        <div class="card-body">
+            <div class="row gx-3">
+                {% for banner in banners %}
+                    <div class="col-4">
+                        <div class="card mb-3 banner-card">
+                            <a href="{% url 'edit_banner' banner.id %}">
+                                <img src="{{ banner.banner_img.url }}" class="card-img-top" alt="Banner Image">
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-title">Title: {{ banner.title }}</h5>
+                                <p class="card-text">Sub Title: {{ banner.subtitle }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <hr>
+                <br>
+        
+                <div class="col-12 form-container">
+                    <form method='post' enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <aside class="col-md-4 col-lg-6">
+                                <div class="card mb-4">
+                                    
+                                    <div class="card-body">
+                                        <center><h5>Add Banner</h5></center>
+                                        <label class="form-label">Banner Image</label>
+                                        <input class="form-control" type="file" name="image">
+        
+                                        <label class="form-label">Title</label>
+                                        <input class="form-control" type="text" name="title">
+        
+                                        <label class="form-label">Sub Title</label>
+                                        <input class="form-control" type="text" name="sub_title">
+                                    </div>
+                                    <button class="btn btn-primary" type="submit">Save</button>
+                                </div>
+                            </aside>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> <!-- row.// -->
+</section> <!-- content-main end// -->
+
+{% endblock content %}
