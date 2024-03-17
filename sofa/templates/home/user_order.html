@@ -2,14 +2,12 @@
 {% load static %}
 {% block content %}
 
-
 <main class="main">
     <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
         <div class="container">
             <h1 class="page-title">Orders<span>Shop</span></h1>
         </div><!-- End .container -->
     </div><!-- End .page-header -->
-    
 
     <div class="page-content">
         <div class="container">
@@ -18,55 +16,58 @@
                     <tr>
                         <th>Product</th>
                         <th>Unit Price</th>
-                        <th>quantity</th>
-                        <th>date</th>
+                        <th>Quantity</th>
+                        <th>Date</th>
                         <th>Order Status</th>
-                        <th>Details</th>                                              
+                        <th>Details</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {% for order_product in ordered_products %}
-                    <tr>
-                        <td class="product-col">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img src="{{ order_product.product.product_image1.url }}" alt="Product image">
-                                    </a>
-                                </figure>
+                        <tr>
+                            <td class="product-col">
+                                <div class="product">
+                                    <figure class="product-media">
+                                        <a href="#">
+                                            <img src="{{ order_product.product.product_image1.url }}" alt="Product image">
+                                        </a>
+                                    </figure>
 
-                                <h3 class="product-title">
-                                    <a href="#">{{ order_product.product.product_name|truncatechars:10 }}</a>
-                                </h3><!-- End .product-title -->
-                            </div><!-- End .product -->
-                        </td>
-                        <td class="price-col">₹ {{ order_product.product.offer_price }}</td>
-                        <td class="price-col">{{order_product.quantity}}</td>
-                        <td class="price-col">{{order_product.created_at}}</td>
-                        {% comment %} <td class="stock-col"><span class="in-stock">Pending</span></td> {% endcomment %}
-                        {% if  order_product.order.status == 'New' and not order.cancelled %}
-                            <td> <span class="badge rounded-pill alert-info">{{  order_product.order.status }}</span> </td>
-                        {% elif  order_product.order.status == 'Cancelled' %}
-                            <td> <span class="badge rounded-pill alert-danger">{{  order_product.order.status }}</span> </td>
-                        {% elif  order_product.order.status == 'Delivered' %}
-                            <td> <span class="badge rounded-pill alert-success">{{  order_product.order.status }}</span> </td>
-                        {% elif  order_product.order.status == 'Returned' %}
-                            <td> <span class="badge rounded-pill alert-primary">{{ order_product.order.status}}</span> </td>
-                        {% endif %}
-                        <td class="action-col">
-                            <a href="{% url 'user_order_view' order_product.order.id %}"><button class="btn btn-block btn-outline-primary-2">View</button></a>
-                        </td>
-                        
-                    </tr>
-                    {% endfor %} 
+                                    <h3 class="product-title">
+                                        <a href="#">{{ order_product.product.product_name|truncatechars:10 }}</a>
+                                    </h3><!-- End .product-title -->
+                                </div><!-- End .product -->
+                            </td>
+                            <td class="price-col">₹ {{ order_product.product.offer_price }}</td>
+                            <td class="price-col">{{ order_product.quantity }}</td>
+                            <td class="price-col">{{ order_product.created_at }}</td>
+
+                            {% if order_product.order.status == 'New' and not order.cancelled %}
+                                <td><span class="badge rounded-pill alert-info">{{ order_product.order.status }}</span></td>
+                            {% elif order_product.order.status == 'Cancelled' %}
+                                <td><span class="badge rounded-pill alert-danger">{{ order_product.order.status }}</span></td>
+                            {% elif order_product.order.status == 'Delivered' %}
+                                <td><span class="badge rounded-pill alert-success">{{ order_product.order.status }}</span></td>
+                            {% elif order_product.order.status == 'Returned' %}
+                                <td><span class="badge rounded-pill alert-primary">{{ order_product.order.status }}</span></td>
+                            {% endif %}
+
+                            <td class="action-col">
+                                <a href="{% url 'user_order_view' order_product.order.id %}">
+                                    <button class="btn btn-block btn-outline-primary-2">View</button>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table><!-- End .table table-wishlist -->
+
             <div class="col-md-1">
                 <a href="{% url 'user_profile' %}">
                     <button class="btn btn-block btn-outline-primary-2">Back To Profile</button>
-                </a>                   
-            </div>    
+                </a>
+            </div>
         </div><!-- End .container -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->

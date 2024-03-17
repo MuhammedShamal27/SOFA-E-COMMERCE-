@@ -48,7 +48,6 @@
                     <div class="col-md-8 col-lg-9">
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
-
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="card card-dashboard">
@@ -65,7 +64,6 @@
                                                 <p><b>FIRST NAME :</b> {{user.first_name}} <br>
                                                     <b>LAST NAME :</b> {{user.last_name}}<br>
                                                     <b>USER NAME :</b> {{user.username}}<br>
-                                                    {% comment %} Phone:<br> {% endcomment %}
                                                     <b>EMAIL :</b> {{user.email}}<br>
                                                     <a href="{% url 'edit_user' user.id %}">EDIT <i class="icon-edit"></i></a><br>
                                                     <a href="{% url 'profile_forget_password' user.id %}">FORGET PASSWORD <i class="icon-edit"></i></a></p>                                           

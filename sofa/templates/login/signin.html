@@ -3,7 +3,20 @@
 {% load socialaccount %}
 {% block content %}
 
+<style>
+    .error-popup {
+        background-color: #ffffff; /* White background color */
+        padding: 10px 20px; /* Padding around the error message */
+        margin-bottom: 10px; /* Bottom margin */
+        border: 1px solid #ff0000; /* Red border */
+        border-radius: 4px; /* Rounded corners */
+    }
 
+    .error-popup p {
+        color: #ff0000; /* Red text color */
+        margin: 0; /* Remove default margins for paragraphs */
+    }
+</style>
 
 <main class="main">
     <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
@@ -25,17 +38,18 @@
                             <a class="nav-link" id="signin-tab-2" data-toggle="tab" href="#signin-2" role="tab" aria-controls="signin-2" aria-selected="false">Sign In</a>
                         </li>
                     </ul>
-                    
-                    
+
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
                             <form method="post">
                                 {% csrf_token %}
-
                                 
-                                {% for message in messages %}   
-                                <p>{{message}}</p>
-                                {% endfor %}
+                                <div id="error-popup" class="error-popup" style="display: none;">
+                                    {% for message in messages %}
+                                        <p>{{ message }}</p>
+                                    {% endfor %}
+                                </div>
+
                                 <div class="form-group">
                                     <label for="singin-email-2">Email address *</label>
                                     <input type="email" class="form-control" id="email" name="email" required>
@@ -60,6 +74,7 @@
                                     <a href="{% url 'forgot_password' %}" class="forgot-link">Forgot Your Password?</a>
                                 </div><!-- End .form-footer -->
                             </form>
+
                             <div class="form-choice">
                                 <p class="text-center">or sign in with</p>
                                 <div class="row">
@@ -69,11 +84,8 @@
                                             Login With Google
                                         </a>
                                     </div><!-- End .col-6 -->
-                                    
                                 </div><!-- End .row -->
                             </div><!-- End .form-choice -->
-
-                        
                         </div><!-- .End .tab-pane -->
                     </div><!-- End .tab-content -->
                 </div><!-- End .form-tab -->
@@ -81,5 +93,32 @@
         </div><!-- End .container -->
     </div><!-- End .login-page section-bg -->
 </main><!-- End .main -->
+
+<script>
+    // Function to display error message in popup box
+    function displayErrorMessage(message) {
+        var errorPopup = document.getElementById("error-popup");
+
+        // Set error message text
+        errorPopup.innerHTML = "<p>" + message + "</p>";
+
+        // Show the error popup
+        errorPopup.style.display = "block";
+
+        // Hide the error popup after 3 seconds
+        setTimeout(function() {
+            errorPopup.style.display = "none";
+        }, 3000); // 3000 milliseconds = 3 seconds
+    }
+
+    // Function to check if there are any error messages and display them
+    window.onload = function() {
+        var errorMessage = document.getElementById("error-popup").innerText;
+        if (errorMessage.trim() !== "") {
+            displayErrorMessage(errorMessage);
+        }
+    };
+</script>
+
 
 {% endblock content %}

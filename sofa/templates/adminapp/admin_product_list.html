@@ -24,44 +24,20 @@
             <p>This is the product list page.</p>
         </div>
         <div>
-            {% comment %} <a href="#" class="btn btn-light rounded font-md">Export</a>
-            <a href="#" class="btn btn-light rounded  font-md">Import</a> {% endcomment %}
+
             <a href="{% url 'add_product' %}" class="btn btn-primary btn-sm rounded">Create new</a>
         </div>
     </div>
     <div class="card mb-4">
         <header class="card-header">
             <div class="row align-items-center">
-                {% comment %} <div class="col col-check flex-grow-0">
-                    <div class="form-check ms-2">
-                        <input class="form-check-input" type="checkbox" value="">
-                    </div>
-                </div> {% endcomment %}
-                <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                    {% comment %} <form method="get" action="{% url 'admin_product_list' %}" class="d-inline">
-                        {% csrf_token %}
-                        <select class="form-select" name="selected_category">
-                            <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
-                            {% for category in categories %}
-                                <option value="{{ category.id }}" {% if category.id == selected_category|default:"" %}selected{% endif %}>
-                                    {{ category.category_name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit">Filter</button>
-                    </form> {% endcomment %}
-                    
+
+                <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">  
+                </div>
+                <div class="col-md-2 col-6">   
                 </div>
                 <div class="col-md-2 col-6">
-                    {% comment %} <input type="date" value="02.05.2021" class="form-control"> {% endcomment %}
-                </div>
-                <div class="col-md-2 col-6">
-                    {% comment %} <select class="form-select">
-                        <option selected>Status</option>
-                        <option>Active</option>
-                        <option>Disabled</option>
-                        <option>Show all</option>
-                    </select> {% endcomment %}
+
                 </div>
             </div>
         </header> <!-- card-header end// -->
@@ -100,9 +76,7 @@
                         <a href="{% url 'edit_products' product.id %}" class="btn btn-sm font-sm rounded btn-brand">
                             <i class="material-icons md-edit"></i> Edit
                         </a>
-                        {% comment %} <a href="#" class="btn btn-sm font-sm btn-light rounded">
-                            <i class="material-icons md-delete_forever"></i> Delete
-                        </a> {% endcomment %}
+
                     
                         {% if not product.soft_delete %}
                             <form method="post" action="{% url 'soft_delete_product' product.id %}" class="d-inline">
@@ -126,10 +100,6 @@
                 </div> <!-- row .// -->
             </article> <!-- itemlist  .// -->
             {% endfor %}
-            
-            
-        
-        
         </div> <!-- card-body end// -->
     </div> <!-- card end// -->
     <div class="pagination-area mt-30 mb-50">
@@ -143,16 +113,6 @@
             {% endfor %}
         </div>
         {% endif %}
-        {% comment %} <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-start">
-                <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                <li class="page-item"><a class="page-link" href="#">02</a></li>
-                <li class="page-item"><a class="page-link" href="#">03</a></li>
-                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                <li class="page-item"><a class="page-link" href="#">16</a></li>
-                <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-            </ul>
-        </nav> {% endcomment %}
     </div>
 </section> <!-- content-main end// -->
 

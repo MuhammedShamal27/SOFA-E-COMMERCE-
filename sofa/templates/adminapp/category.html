@@ -8,8 +8,7 @@
                     <h2 class="content-title card-title">Categories </h2>
                     <p>Add, edit or delete a category</p>
                 </div>
-                <div>
-                    
+                <div>  
                 </div>
             </div>
             <div class="card">
@@ -19,29 +18,23 @@
 
                             <form method="post" action="{% url 'category' %}" enctype="multipart/form-data">
                                 {% csrf_token %}
-                                {% if messages %}
-                                                {% for msg in messages %}
-                                                    {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-                                                        <div class="messages">
-                                                            <div style="color: #cc0000;">
-                                                                {{ msg }}
-                                                            </div>
-                                                        </div>
-                                                    {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                                                        <div class="messages">
-                                                            <div style="color: #cc0000;">
-                                                                {{ msg }}
-                                                            </div>
-                                                        </div>
-                                                    {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                                                        <div class="messages">
-                                                            <div style="color: #00cc00;">
-                                                                {{ msg }}
-                                                            </div>
-                                                        </div>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% endif %}
+                                    {% if messages %}
+                                        <div class="messages-box">
+                                            {% for msg in messages %}
+                                                {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                                                    <div class="messages alert alert-warning" style="background-color: #ffffff;">
+                                                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                                                    <div class="messages alert alert-danger" style="background-color: #ffffff;">
+                                                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                                                    <div class="messages alert alert-success" style="background-color: #ffffff;">
+                                                {% endif %}
+                                                    {{ msg }}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+
+
                                             <br>
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
@@ -64,19 +57,12 @@
                                 </div>
                             </form>
 
-
-
                         </div>
                         <div class="col-md-9">
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            {% comment %} <th class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </th> {% endcomment %}
                                             <th>No.</th>
                                             <th>Profile</th>
                                             <th>Name</th>
@@ -89,12 +75,6 @@
                                     <tbody>
                                     {% for cat in categories %}
                                         <tr>
-                                            {% comment %} <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td> {% endcomment %}
-
                                             <td>{{forloop.counter}}</td>
                                             <td >
                                                  <img src="{{  cat.category_image.url  }}" alt="category image" style="width:30px; height:30px; ">
@@ -146,4 +126,28 @@
                 </div> <!-- card body .// -->
             </div> <!-- card .// -->
         </section> <!-- content-main end// -->
+<script>
+            // Function to show pop-up messages
+            function showMessages() {
+                // Get all elements with class 'messages'
+                var messages = document.getElementsByClassName('messages');
+
+                // Loop through each message element
+                for (var i = 0; i < messages.length; i++) {
+                    // Show the message element
+                    messages[i].style.display = 'block';
+
+                    // Create a closure to capture the value of i
+                    (function(index) {
+                        // Hide the message after 5 seconds
+                        setTimeout(function() {
+                            messages[index].style.display = 'none';
+                        }, 5000); // 5000 milliseconds = 5 seconds
+                    })(i);
+                }
+            }
+
+            // Call the function when the page loads
+            window.onload = showMessages;
+        </script>
 {% endblock %}

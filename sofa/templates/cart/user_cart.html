@@ -1,261 +1,351 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block content %}
 
 <style>
-.box{
-	display:flex;
-	width:10px;
-}
+    .box {
+        display: flex;
+        width: 10px;
+    }
+        .messages {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+        display: none;
+        color: red;
+    }
+
+    .alert-success {
+        background-color: #dff0d8;
+        border-color: #d0e9c6;
+        color: #3c763d;
+    }
+
+    .alert-info {
+        background-color: #d9edf7;
+        border-color: #bce8f1;
+        color: #31708f;
+    }
+
+    .alert-warning {
+        background-color: #fcf8e3;
+        border-color: #faebcc;
+        color: #8a6d3b;
+    }
+
+    .alert-danger {
+        background-color: #f2dede;
+        border-color: #ebccd1;
+        color: #a94442;
+    }
+
+    .close {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 20px;
+        color: inherit;
+    }
 </style>
-        <main class="main">
-        	<div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
-        		<div class="container">
-        			<h1 class="page-title">Shopping Cart<span>Shop</span></h1>
-        		</div><!-- End .container -->
-        	</div><!-- End .page-header -->
-            <nav aria-label="breadcrumb" class="breadcrumb-nav">
-                <div class="container">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
-                    </ol>
-                </div><!-- End .container -->
-            </nav><!-- End .breadcrumb-nav -->
 
-            <div class="page-content">
-            	<div class="cart">
-	                <div class="container">
-	                	<div class="row">
-	                		<div class="col-lg-9">
-	                			<table class="table table-cart table-mobile">
-									<thead>
-										<tr>
-											<th>Product</th>
-											<th>Price</th>
-											<th>Quantity</th>
-											<th>Total</th>
-											<th></th>
-										</tr>
-									</thead>
+<main class="main">
+    <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
+        <div class="container">
+            <h1 class="page-title">Shopping Cart<span>Shop</span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
 
-									<tbody>
-										
-										{% for item in cart_items %}
-										<tr>
-											<td class="product-col">
-												<div class="product">
-													<figure class="product-media">
-														<a href="#">
-															<img src="{{item.product.product_image1.url}}" alt="Product image">
-														</a>
-													</figure>
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+                                            {% for message in messages %}
+                                                <div class="messages alert alert-{{ message.tags }}">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    {{ message }}
+                                                </div>
+                                            {% endfor %}
 
-													<h3 class="product-title">
-														<a href="#">{{item.product.Product_name}}</a>
-													</h3><!-- End .product-title -->
-												</div><!-- End .product -->
-											</td>
-											<td class="price-col">{{item.product.offer_price}}</td>
-											<td class="quantity-col">
-                                                <div class="cart-product-quantity">
-													{% comment %} <form method="post" action="{% url 'update_cart' %}">
-														{% csrf_token %}
-														<div class="box">
-															<a href="#" ><i class="icon-minus"></i></a>
-															<input type="text" value="{{item.quantity }}" name="quantity_{{ item.id }}" id="name" style="border: thin solid transparent; text-align: center; width:15px;" readonly>
-															<a href="{% url 'add_to_cart' item.product.id %}"><i class="icon-plus"></i></a>
-														</div>												
-												    </form> {% endcomment %}
+    <div class="page-content">
+        <div class="cart">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <table class="table table-cart table-mobile">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
 
-													
-														
-													<div class="box">
-														<a href="#" class="remove-btn" data-product-id="{{ item.product.id }}" data-url="{% url 'remove_product' item.product.id %}">
-															<i class="icon-minus"></i>
-														</a>
-														<input type="text" value="{{ item.quantity }}" name="quantity_{{ item.id }}" data-item-id="{{ item.id }}" class="quantity-input" style="border: thin solid transparent; text-align: center; width: 20px;" readonly>
-														<a href="#" class="add-btn" data-product-id="{{ item.product.id }}" data-url="{% url 'add_to_cart' item.product.id %}">
-															<i class="icon-plus"></i>
-														</a>
-													</div>
-													
-												</div><!-- End .cart-product-quantity -->
-                                            </td>
-											<td class="total-col">
-												<span class="total-value" data-item-id="{{ item.id }}">{{ item.sub_total }}</span>
-											</td>
-												<td class="remove-col"><a href="{% url 'remove_cart' item.product.id%}"><button type="submit" name="remove_item" value="{{ item.id }}" class="btn-remove"><i class="icon-close"></i></button></a></td>
-										</tr>
-										{% endfor %}
-									
-									</tbody>
-								</table><!-- End .table table-wishlist -->
+                            <tbody>
 
-	                			{% comment %} <div class="cart-bottom">
-			            			<div class="cart-discount">
-			            				<form action="#">
-			            					<div class="input-group">
-				        						<input type="text" class="form-control" required placeholder="coupon code">
-				        						<div class="input-group-append">
-													<button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
-												</div><!-- .End .input-group-append -->
-			        						</div><!-- End .input-group -->
-			            				</form>
-			            			</div><!-- End .cart-discount -->
+                            {% for item in cart_items %}
+                                <tr>
+                                    <td class="product-col">
+                                        <div class="product">
+                                            <figure class="product-media">
+                                                <a href="#">
+                                                    <img src="{{item.product.product_image1.url}}" alt="Product image">
+                                                </a>
+                                            </figure>
 
-			            			<a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a>
-		            			</div><!-- End .cart-bottom --> {% endcomment %}
-	                		</div><!-- End .col-lg-9 -->
-	                		<aside class="col-lg-3">
-	                			<div class="summary summary-cart">
-	                				<h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+                                            <h3 class="product-title">
+                                                <a href="#">{{item.product.Product_name}}</a>
+                                            </h3><!-- End .product-title -->
+                                        </div><!-- End .product -->
+                                    </td>
+                                    <td class="price-col">{{item.product.offer_price}}</td>
+                                    <td class="quantity-col">
+                                        <div class="cart-product-quantity">
 
-	                				<table class="table table-summary">
-	                					<tbody>
-	                						<tr class="summary-subtotal">
-	                							<td>Subtotal:</td>
-	                							<td class="total-grandTotal">₹{{ grandTotal }}</td>
-	                						</tr><!-- End .summary-subtotal -->
-	                						<tr class="summary-shipping">
-	                							<td>Shipping:</td>
-	                							<td>&nbsp;</td>
-	                						</tr>
+                                            <div class="box">
+                                                <a href="#" class="remove-btn" data-product-id="{{ item.product.id }}" data-url="{% url 'remove_product' item.product.id %}">
+                                                    <i class="icon-minus"></i>
+                                                </a>
+                                                <input type="text" value="{{ item.quantity }}" name="quantity_{{ item.id }}" data-item-id="{{ item.id }}" class="quantity-input" style="border: thin solid transparent; text-align: center; width: 20px;" readonly>
+                                                <a href="#" class="add-btn" data-product-id="{{ item.product.id }}" data-url="{% url 'add_to_cart' item.product.id %}">
+                                                    <i class="icon-plus"></i>
+                                                </a>
+                                            </div>
+                                            
 
-	                						<tr class="summary-shipping-row">
-	                							<td>
-													<div class="custom-control custom-radio">
-														<input type="radio" id="free-shipping" name="shipping" class="custom-control-input">
-														<label class="custom-control-label" for="free-shipping">Free Shipping</label>
-													</div><!-- End .custom-control -->
-	                							</td>
-	                							<td>₹0.00</td>
-	                						</tr><!-- End .summary-shipping-row -->
+                                        </div><!-- End .cart-product-quantity -->
+                                    </td>
+                                    <td class="total-col">
+                                        <span class="total-value" data-item-id="{{ item.id }}">{{ item.sub_total }}</span>
+                                    </td>
+                                    <td class="remove-col">
+                                        <a href="{% url 'remove_cart' item.product.id%}"><button type="submit" name="remove_item" value="{{ item.id }}" class="btn-remove"><i class="icon-close"></i></button></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
 
+                            </tbody>
+                        </table><!-- End .table table-wishlist -->
 
-	                						<tr class="summary-total">
-	                							<td>Total:</td>
-	                							<td class="total-grandTotal">₹{{ grandTotal }}</td>
-	                						</tr><!-- End .summary-total -->
-	                					</tbody>
-	                				</table><!-- End .table table-summary -->
+                    </div><!-- End .col-lg-9 -->
+                    <aside class="col-lg-3">
+                        <div class="summary summary-cart">
+                            <h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
 
-	                				<a href="{% url 'checkout' %}" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
-	                			</div><!-- End .summary -->
+                            <table class="table table-summary">
+                                <tbody>
+                                    <tr class="summary-subtotal">
+                                        <td>Subtotal:</td>
+                                        <td class="total-grandTotal">₹{{ grandTotal }}</td>
+                                    </tr><!-- End .summary-subtotal -->
+                                    <tr class="summary-shipping">
+                                        <td>Shipping:</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
 
-		            			<a href="category.html" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
-	                		</aside><!-- End .col-lg-3 -->
-	                	</div><!-- End .row -->
-	                </div><!-- End .container -->
-                </div><!-- End .cart -->
-            </div><!-- End .page-content -->
-        </main><!-- End .main -->
-		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                                    <tr class="summary-shipping-row">
+                                        <td>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="free-shipping" name="shipping" class="custom-control-input">
+                                                <label class="custom-control-label" for="free-shipping">Free Shipping</label>
+                                            </div><!-- End .custom-control -->
+                                        </td>
+                                        <td>₹0.00</td>
+                                    </tr><!-- End .summary-shipping-row -->
 
-		<script>
-			$(document).ready(function () {
-		
-				function getCookie(name) {
-					const value = `; ${document.cookie}`;
-					const parts = value.split(`; ${name}=`);
-					if (parts.length === 2) return parts.pop().split(';').shift();
-				}
-		
-				function handleAjaxRequest(url, successCallback) {
-					$.ajax({
-						url: url,
-						type: 'GET',
-						dataType: 'json',
-						headers: {
-							'X-CSRFToken': getCookie('csrftoken')
-						},
-						success: function (data) {
-							successCallback(data);
-						},
-						error: function (xhr, textStatus, errorThrown) {
-							console.error('AJAX request failed:', {
-								url: url,
-								data: xhr.responseText,
-								textStatus: textStatus,
-								errorThrown: errorThrown
-							});
-						}
-					});
-				}
-		
-				$('.remove-btn').click(function (e) {
-					e.preventDefault();
-					var productId = $(this).data('product-id');
-					var url = $(this).data('url');
-		
-					handleAjaxRequest(url, function (data) {
-						console.log('Product removed successfully');
-						updateCart(data);
-					});
-				});
-		
-				$('.add-btn').click(function (e) {
-					e.preventDefault();
-					var productId = $(this).data('product-id');
-					var url = $(this).data('url');
-		
-					handleAjaxRequest(url, function (data) {
-						console.log('Product added successfully');
-						updateCart(data);
-					});
-				});
-		
-				function updateCart(data) {
-					// Select the specific quantity input and total value associated with the updated product
-					var quantityInput = $('input[name="quantity_' + data.item_id + '"]');
-					var totalValue = $('.total-value[data-item-id="' + data.item_id + '"]');
-					var subTotalValue = $('.sub-total-value[data-item-id="' + data.item_id + '"]');
-				
-					// Update the quantity input value
-					quantityInput.val(data.quantity);
-					console.log('Updated quantity:', data.quantity);
-				
-					// Update the total value for the specific product
-					totalValue.text(data.total);
-					console.log('Updated total:', data.total);
-				
-					// Update the sub-total value for the specific product
-					if (data.sub_total !== undefined) {
-						subTotalValue.text(data.sub_total);
-						console.log('Updated sub-total:', data.sub_total);
-					} else {
-						console.warn('Sub-total is undefined');
-					}
-				
-					// Update other elements if needed (e.g., total amount)
-					$('#total-amount').text('₹' + data.total);
-					$('#total-total').text('₹' + data.total);
-				
-					$('#total').text('₹' + data.total);
-					$('#quantity').text(data.quantity);
-				
-					// Check if grandTotal is defined before updating
-					if (data.grandTotal !== undefined) {
-						$('.total-grandTotal').text('₹' + data.grandTotal);
-						console.log('Updated grand total:', data.grandTotal);
-					} else {
-						console.warn('Grand total is undefined');
-					}
-				
-					// Update the cart items section with the new data
-					// This assumes you have a section in your HTML for displaying cart items
-					// Update the section accordingly based on your HTML structure
-					$('#cart-items-section').html(data.cart_items);
-				}
-				
-				
-				
-			});
-		</script>
-		
-		
+                                    <tr class="summary-total">
+                                        <td>Total:</td>
+                                        <td class="total-grandTotal">₹{{ grandTotal }}</td>
+                                    </tr><!-- End .summary-total -->
+                                </tbody>
+                            </table><!-- End .table table-summary -->
 
-		
+                            <a href="{% url 'checkout' %}" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+                        </div><!-- End .summary -->
+
+                        <a href="{% url 'product_list' %}" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                    </aside><!-- End .col-lg-3 -->
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+        </div><!-- End .cart -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    // Function to show pop-up messages
+    function showMessages() {
+        // Get all elements with class 'messages'
+        var messages = document.getElementsByClassName('messages');
+
+        // Loop through each message element
+        for (var i = 0; i < messages.length; i++) {
+            // Show the message element
+            messages[i].style.display = 'block';
+
+            // Create a closure to capture the value of i
+            (function(index) {
+                // Hide the message after 5 seconds
+                setTimeout(function() {
+                    messages[index].style.display = 'none';
+                }, 5000); // 5000 milliseconds = 5 seconds
+            })(i);
+        }
+    }
+
+    // Call the function when the DOM content is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        showMessages();
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function handleAjaxRequest(url, successCallback) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                success: function (data) {
+                    successCallback(data);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('AJAX request failed:', {
+                        url: url,
+                        data: xhr.responseText,
+                        textStatus: textStatus,
+                        errorThrown: errorThrown
+                    });
+                }
+            });
+        }
+
+        function updateMinusButtonVisibility(quantityInput, removeBtn) {
+            var quantityValue = parseInt(quantityInput.val(), 10);
+            if (quantityValue <= 1) {
+                removeBtn.hide();
+            } else {
+                removeBtn.show();
+            }
+        }
+
+        $('.remove-btn').click(function (e) {
+            e.preventDefault();
+            var productId = $(this).data('product-id');
+            var url = $(this).data('url');
+            var quantityInput = $('input[name="quantity_' + productId + '"]');
+            var removeBtn = $(this);
+
+            handleAjaxRequest(url, function (data) {
+                if (data.removed) {
+                    console.log('Product removed successfully');
+                    // Handle the removal of the product from the UI as needed
+                } else {
+                    console.log('Product quantity updated successfully');
+                    updateCart(data);
+                }
+            });
+        });
+
+        $('.add-btn').click(function (e) {
+            e.preventDefault();
+            var productId = $(this).data('product-id');
+            var url = $(this).data('url');
+            var quantityInput = $('input[name="quantity_' + productId + '"]');
+            var removeBtn = quantityInput.siblings('.remove-btn');
+
+            handleAjaxRequest(url, function (data) {
+                console.log('Product added successfully');
+                updateCart(data);
+            });
+        });
+
+        function updateCart(data) {
+            // Select the specific quantity input and total value associated with the updated product
+            var quantityInput = $('input[name="quantity_' + data.item_id + '"]');
+            var totalValue = $('.total-value[data-item-id="' + data.item_id + '"]');
+            var subTotalValue = $('.sub-total-value[data-item-id="' + data.item_id + '"]');
+        
+            // Update the quantity input value
+            quantityInput.val(data.quantity);
+            console.log('Updated quantity:', data.quantity);
+        
+            if (data.removed) {
+                // Handle the removal of the product from the UI as needed
+                console.log('Product removed successfully');
+                // For example, you might want to remove the entire row from the table
+                quantityInput.closest('tr').remove();
+            } else {
+                // Update the total value for the specific product
+                totalValue.text(data.total);
+                console.log('Updated total:', data.total);
+        
+                // Update the sub-total value for the specific product
+                if (data.sub_total !== undefined) {
+                    subTotalValue.text(data.sub_total);
+                    console.log('Updated sub-total:', data.sub_total);
+                } else {
+                    console.warn('Sub-total is undefined');
+                }
+        
+                // Update other elements if needed (e.g., total amount)
+                $('#total-amount').text('₹' + data.total);
+                $('#total-total').text('₹' + data.total);
+        
+                $('#total').text('₹' + data.total);
+                $('#quantity').text(data.quantity);
+        
+                // Check if grandTotal is defined before updating
+                if (data.grandTotal !== undefined) {
+                    $('.total-grandTotal').text('₹' + data.grandTotal);
+                    console.log('Updated grand total:', data.grandTotal);
+                } else {
+                    console.warn('Grand total is undefined');
+                }
+                // Update the cart items section with the new data
+                // This assumes you have a section in your HTML for displaying cart items
+                // Update the section accordingly based on your HTML structure
+                $('#cart-items-section').html(data.cart_items);
+                
+                // Update the minus button visibility immediately
+                var removeBtn = quantityInput.siblings('.remove-btn');
+                updateMinusButtonVisibility(quantityInput, removeBtn);
+            }
+        }
+
+        // Initial setup for minus button visibility
+        $('.quantity-input').each(function () {
+            var quantityInput = $(this);
+            var removeBtn = quantityInput.siblings('.remove-btn');
+            updateMinusButtonVisibility(quantityInput, removeBtn);
+        });
+        
+    });
+</script>
 
 {% endblock content %}

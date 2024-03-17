@@ -14,12 +14,63 @@
         color: #28a745; /* Set text color to green */
         border-color: #28a745; /* Set border color to green */
     }
+
+.messages-box {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+}
+
+.message {
+    margin-bottom: 10px;
+    color: red; /* Default color for error messages */
+}
+
+.message.success {
+    color: #155724; /* Color for success messages */
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
 </style>
 <section class="content-main">
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Coupons</h2>
         </div>
+{% if messages %}
+<div class="messages-box">
+    {% for msg in messages %}
+    <div class="message {{ msg.tags }}">
+        {{ msg }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
         <div>
             <a href="{% url 'add_coupon' %}" class="btn btn-primary btn-sm rounded">Create new</a>
         </div>
@@ -114,5 +165,20 @@
         </div>
     </div>
 </section>
+
+<script>
+    // Function to hide the messages and their parent element after 5 seconds
+    function hideMessages() {
+        var messages = document.querySelectorAll('.message');
+        messages.forEach(function(message) {
+            setTimeout(function() {
+                message.parentElement.style.display = 'none';
+            }, 5000);
+        });
+    }
+
+    // Call the function when the page loads
+    window.onload = hideMessages;
+</script>
 
 {% endblock content %}

@@ -73,14 +73,7 @@
         margin: 3px 0; /* Reduce margin */
     }
 
-    /* ... (your existing styles) ... */
-
-    /* ... (your existing styles) ... */
-
-    /* ... (your existing styles) ... */
 </style>
-
-
 
 <main class="main">
     <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
@@ -124,11 +117,11 @@
                             </li>
                         </ul>
                     </aside><!-- End .col-lg-3 -->
-
+    
                     <div class="col-md-8 col-lg-9">
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
-
+    
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <center><h3 class="card-title">Available Coupons</h3></center><!-- End .card-title -->
@@ -146,13 +139,13 @@
                                         </div>
                                         {% endfor %}
                                     </div>
-
+    
                                     <div class="col-lg-6">
-
+    
                                         <center><h3 class="card-title">Used/Expired Coupons</h3></center><!-- End .card-title -->
                                         <hr>
                                         {% for used_coupon in used_coupons %}
-
+    
                                         <div class="coupon-card expired-coupon-card">
                                             <img class="coupon-image" src="{% static 'assets/images/banners/sold.jpg' %}" alt="Coupon Image" >  
                                             <div class="coupon-details">
@@ -162,7 +155,7 @@
                                             </div>
                                         </div>
                                         {% endfor %}
-
+    
                                     </div><!-- End .col-lg-6 -->
                                 </div><!-- End .row -->
                             </div><!-- .End .tab-pane -->
@@ -172,42 +165,41 @@
             </div><!-- End .container -->
         </div><!-- End .dashboard -->
     </div><!-- End .page-content -->
-</main><!-- End .main -->
-
-<!-- Add this to your HTML head section -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
-
-<script>
-    function copyCouponCode(couponCode) {
-        // Create a temporary input element
-        var tempInput = document.createElement('input');
-        
-        // Set the input value to the coupon code
-        tempInput.value = couponCode;
-
-        // Append the input element to the body
-        document.body.appendChild(tempInput);
-
-        // Select the input content
-        tempInput.select();
-        tempInput.setSelectionRange(0, 99999); // For mobile devices
-
-        // Copy the selected text to the clipboard
-        document.execCommand('copy');
-
-        // Remove the temporary input element
-        document.body.removeChild(tempInput);
-
-        // Show a SweetAlert2 pop-up
-        Swal.fire({
-            icon: 'success',
-            title: 'Coupon Code Copied!',
-            text: 'You can now use the copied coupon code during checkout.',
-            showConfirmButton: false,
-            timer: 2000 // Adjust the duration of the pop-up
-        });
-    }
-</script>
-
+    
+    <!-- Add this to your HTML head section -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    
+    <script>
+        function copyCouponCode(couponCode) {
+            // Create a temporary input element
+            var tempInput = document.createElement('input');
+            
+            // Set the input value to the coupon code
+            tempInput.value = couponCode;
+    
+            // Append the input element to the body
+            document.body.appendChild(tempInput);
+    
+            // Select the input content
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // For mobile devices
+    
+            // Copy the selected text to the clipboard
+            document.execCommand('copy');
+    
+            // Remove the temporary input element
+            document.body.removeChild(tempInput);
+    
+            // Show a SweetAlert2 pop-up
+            Swal.fire({
+                icon: 'success',
+                title: 'Coupon Code Copied!',
+                text: 'You can now use the copied coupon code during checkout.',
+                showConfirmButton: false,
+                timer: 2000 // Adjust the duration of the pop-up
+            });
+        }
+    </script>
+    
 {% endblock content %}
+    

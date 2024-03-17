@@ -2,6 +2,43 @@
 {% load static %}
 {% block content %}
 
+<style>
+.messages-box {
+position: fixed;
+top: 20px;
+left: 50%;
+transform: translateX(-50%);
+width: 300px;
+padding: 10px 20px;
+border-radius: 5px;
+background-color: #ffffff;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+z-index: 9999;
+}
+
+.message {
+    margin-bottom: 10px;
+    color:red;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+</style>
 
 <form method="post" action="{% url 'edit_products' p_id=product.id %}" enctype="multipart/form-data">
 
@@ -12,35 +49,21 @@
                 <div class="content-header">
                     <h2 class="content-title">Edit Product</h2>
                     <div>
-                        {% comment %} <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> {% endcomment %}
+                        
                         <button type="submit" class="btn btn-md rounded font-sm hover-up">Save</button>
                     </div>
                 </div>
             </div>
             
-            {% if messages %}
-            {% for msg in messages %}
-                {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-                    <div class="messages">
-                        <div style="color: #cc0000;">
-                            {{ msg }}
-                        </div>
-                    </div>
-                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                    <div class="messages">
-                        <div style="color: #cc0000;">
-                            {{ msg }}
-                        </div>
-                    </div>
-                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                    <div class="messages">
-                        <div style="color: #00cc00;">
-                            {{ msg }}
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
-            {% endif %}
+{% if messages %}
+<div class="messages-box">
+    {% for msg in messages %}
+        <div class="message {{ msg.tags }}">
+            {{ msg }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
 
             <div class="col-lg-6">
                 <div class="card mb-4">
@@ -77,74 +100,117 @@
                         </div>
                     </div>
                 </div> <!-- card end// -->
+
+{% for i in "12345" %}
+<div class="row">
+    <div class="col-md-3">
+        {% with images|get_item:"product_image"|add:i as image %}
+            {% if image %}
+                <div>{{ image.name|truncatechars:13 }}</div>
+                <img src="{{ image.url }}" alt="Image {{ i }}" style="width:50px; height:50px">
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="col-md-9">
+        <input class="form-control" type="file" name="image{{ i }}" style="margin-top:15px;">
+        {% with 'existing_image'|add:i as existing_image_key %}
+            {% with images|get_item:existing_image_key as existing_image_url %}
+                {% if existing_image_url %}
+                    <input type="hidden" name="{{ existing_image_key }}" value="{{ existing_image_url }}">
+                {% endif %}
+            {% endwith %}
+        {% endwith %}
+    </div>
+</div>
+{% endfor %}
+
+
+
+
+
                 
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div>
-                            <label class="form-label">Images</label>
+<!--                <div class="card mb-4">-->
+<!--                    <div class="card-body">-->
+<!--                        <div>-->
+<!--                            <label class="form-label">Images</label>-->
 
-                            <div class="row">
-                                <div class="col-md-3">
-                                    {% if product.product_image1  %}
-                                        <div>{{ product.product_image1.name|truncatechars:13 }}</div>
-                                        <img src="{{ product.product_image1.url }}" alt="Image 1" style="width:50px; height:50px">
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="file" name="image1" style="margin-top:15px;">
-                                </div>
-                            </div>
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-3">-->
+<!--                                    {% if product.product_image1  %}-->
+<!--                                        <div>{{ product.product_image1.name|truncatechars:13 }}</div>-->
+<!--                                        <img src="{{ product.product_image1.url }}" alt="Image 1" style="width:50px; height:50px">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                                <div class="col-md-9">-->
+<!--                                    <input class="form-control" type="file" name="image1" style="margin-top:15px;">-->
+<!--                                    {% if product.product_image1 %}-->
+<!--                                        <input type="hidden" name="existing_image1" value="{{ existing_image_urls.existing_image1 }}">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                            </div>-->
 
-                            <div class="row">
-                                <div class="col-md-3">
-                                    {% if product.product_image2  %}
-                                        <div>{{ product.product_image2.name|truncatechars:13 }}</div>
-                                        <img src="{{ product.product_image2.url }}" alt="Image 2" style="width:50px; height:50px">
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="file" name="image2" style="margin-top:15px;">
-                                </div>
-                            </div>
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-3">-->
+<!--                                    {% if product.product_image2  %}-->
+<!--                                        <div>{{ product.product_image2.name|truncatechars:13 }}</div>-->
+<!--                                        <img src="{{ product.product_image2.url }}" alt="Image 2" style="width:50px; height:50px">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                                <div class="col-md-9">-->
+<!--                                    <input class="form-control" type="file" name="image2" style="margin-top:15px;">-->
+<!--                                    {% if product.product_image1 %}-->
+<!--                                        <input type="hidden" name="existing_image1" value="{{ product.product_image1.url }}">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                            </div>-->
 
-                            <div class="row">
-                                <div class="col-md-3">
-                                    {% if product.product_image3  %}
-                                        <div>{{ product.product_image3.name|truncatechars:13 }}</div>
-                                        <img src="{{ product.product_image3.url }}" alt="Image 3" style="width:50px; height:50px">
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="file" name="image3" style="margin-top:15px;">
-                                </div>
-                            </div>
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-3">-->
+<!--                                    {% if product.product_image3  %}-->
+<!--                                        <div>{{ product.product_image3.name|truncatechars:13 }}</div>-->
+<!--                                        <img src="{{ product.product_image3.url }}" alt="Image 3" style="width:50px; height:50px">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                                <div class="col-md-9">-->
+<!--                                    <input class="form-control" type="file" name="image3" style="margin-top:15px;">-->
+<!--                                    {% if product.product_image1 %}-->
+<!--                                        <input type="hidden" name="existing_image1" value="{{ product.product_image1.url }}">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                            </div>-->
 
-                            <div class="row">
-                                <div class="col-md-3">
-                                    {% if product.product_image4  %}
-                                        <div>{{ product.product_image4.name|truncatechars:13 }}</div>
-                                        <img src="{{ product.product_image4.url }}" alt="Image 4" style="width:50px; height:50px">
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="file" name="image4" style="margin-top:15px;">
-                                </div>
-                            </div>
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-3">-->
+<!--                                    {% if product.product_image4  %}-->
+<!--                                        <div>{{ product.product_image4.name|truncatechars:13 }}</div>-->
+<!--                                        <img src="{{ product.product_image4.url }}" alt="Image 4" style="width:50px; height:50px">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                                <div class="col-md-9">-->
+<!--                                    <input class="form-control" type="file" name="image4" style="margin-top:15px;">-->
+<!--                                    {% if product.product_image1 %}-->
+<!--                                        <input type="hidden" name="existing_image1" value="{{ product.product_image1.url }}">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                            </div>-->
 
-                            <div class="row">
-                                <div class="col-md-3">
-                                    {% if product.product_image5  %}
-                                        <div>{{ product.product_image5.name|truncatechars:13 }}</div>
-                                        <img src="{{ product.product_image5.url }}" alt="Image 5" style="width:50px; height:50px">
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-9">
-                                    <input class="form-control" type="file" name="image5" style="margin-top:15px;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> <!-- card end// -->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-3">-->
+<!--                                    {% if product.product_image5  %}-->
+<!--                                        <div>{{ product.product_image5.name|truncatechars:13 }}</div>-->
+<!--                                        <img src="{{ product.product_image5.url }}" alt="Image 5" style="width:50px; height:50px">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                                <div class="col-md-9">-->
+<!--                                    <input class="form-control" type="file" name="image5" style="margin-top:15px;">-->
+<!--                                    {% if product.product_image1 %}-->
+<!--                                        <input type="hidden" name="existing_image{{i}}" value="{{ existing_image_url }}">-->
+<!--                                    {% endif %}-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div> &lt;!&ndash; card end// &ndash;&gt;-->
                 
             </div>
             <div class="col-lg-3">
@@ -157,10 +223,7 @@
                         <div class="mb-4">
                             <label class="form-label">Seating capacity</label>
                             <input type="text" placeholder="Type here" value={{product.seating}} class="form-control" id='seating' name='seating'>
-                            {% comment %} <select class="form-select">
-                                <option>Published</option>
-                                <option>Draft</option>
-                            </select> {% endcomment %}
+
                         </div>
                         
                         <hr>
@@ -220,7 +283,18 @@
         </div>  
     </section>
 </form>
+<script>
+    // Function to hide the messages and their parent element after 5 seconds
+    function hideMessages() {
+        var messages = document.querySelectorAll('.message');
+        messages.forEach(function(message) {
+            setTimeout(function() {
+                message.parentElement.style.display = 'none';
+            }, 5000);
+        });
+    }
 
-
-
+    // Call the function when the page loads
+    window.onload = hideMessages;
+</script>
 {% endblock content %}

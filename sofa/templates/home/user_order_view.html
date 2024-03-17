@@ -3,48 +3,47 @@
 {% block content %}
 
 <style>
-.button-for-cancel{
-    padding:20px;
-}
-.btn-custom {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-bottom: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    text-align: center;
-    text-decoration: none;
-    white-space: nowrap;
-    cursor: pointer;
-    
-}
+    .button-for-cancel {
+        padding: 20px;
+    }
 
-.btn-primary {
-    color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
-}
+    .btn-custom {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        text-align: center;
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
+    }
 
-.btn-danger {
-    color: #fff;
-    background-color: #dc3545;
-    border-color: #dc3545;
-}
+    .btn-primary {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
 
-.btn-info {
-    color: #fff;
-    background-color: #17a2b8;
-    border-color: #17a2b8;
-}
+    .btn-danger {
+        color: #fff;
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
 
+    .btn-info {
+        color: #fff;
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
 </style>
+
 <main class="main">
     <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
         <div class="container">
             <h1 class="page-title">Orders<span>Shop</span></h1>
         </div><!-- End .container -->
     </div><!-- End .page-header -->
-    
 
     <div class="page-content">
         <div class="container">
@@ -54,16 +53,16 @@
                     <div class="col-lg-6">
                         <div class="card card-dashboard">
                             <div class="card-body">
-                                
+
                                 {% for order in orders %}
-                                <p><b>ORDER ID :</b> {{order.order_number}} <br>
-                                    <b>TOTAL AMOUNT :</b> {{order.order_total}}<br>
-                                    <b>tYPE OF PAYMENT :</b> 
-                                    {% for payment in payments %}
-                                    {{ payment.payment_method }}
-                                    {% endfor %}<br>
-                                    <b>STATUS :</b> {{order.status}}<br>
-                                {% endfor %}                                          
+                                    <p><b>ORDER ID :</b> {{order.order_number}} <br>
+                                        <b>TOTAL AMOUNT :</b> {{order.order_total}}<br>
+                                        <b>tYPE OF PAYMENT :</b>
+                                        {% for payment in payments %}
+                                            {{ payment.payment_method }}
+                                        {% endfor %}<br>
+                                        <b>STATUS :</b> {{order.status}}<br>
+                                {% endfor %}
                             </div><!-- End .card-body -->
                         </div><!-- End .card-dashboard -->
                     </div><!-- End .col-lg-6 -->
@@ -71,11 +70,11 @@
                         <div class="card card-dashboard">
                             <div class="card-body">
                                 {% for order in orders %}
-                                <p><b>NAME :</b> {{order.address.first_name}} {{order.address.last_name}} <br>
-                                    <b>ADDRESS :</b> {{order.address.paddress}},{{order.address.locality}},{{order.address.city}}<br>
-                                    <b>PINCODE :</b> {{order.address.pincode}}<br>
-                                    <b>STATE :</b> {{order.address.state}}<br>
-                                {% endfor %}                                              
+                                    <p><b>NAME :</b> {{order.address.first_name}} {{order.address.last_name}} <br>
+                                        <b>ADDRESS :</b> {{order.address.paddress}},{{order.address.locality}},{{order.address.city}}<br>
+                                        <b>PINCODE :</b> {{order.address.pincode}}<br>
+                                        <b>STATE :</b> {{order.address.state}}<br>
+                                {% endfor %}
                             </div><!-- End .card-body -->
                         </div><!-- End .card-dashboard -->
                     </div><!-- End .col-lg-6 -->
@@ -103,7 +102,7 @@
                                     <td>₹{{ order_product.total }}</td>
                                 </tr>
                             {% endfor %}
-            
+
                             {% for i in orders %}
                                 <tr class="mt-4">
                                     <td colspan="6">
@@ -122,29 +121,29 @@
             </div>
             <div class="button-for-cancel">
                 {% for order in orders %}
-                {% if order.status == 'New' and not order.cancelled %}
-                    <form action="{% url 'cancel_order' order.id %}" method="post">
-                        {% csrf_token %}
-                        <input type="submit" value="Cancel Order" class="btn btn-custom btn-danger">
-                    </form>
+                    {% if order.status == 'New' and not order.cancelled %}
+                        <form action="{% url 'cancel_order' order.id %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" value="Cancel Order" class="btn btn-custom btn-danger">
+                        </form>
 
-                {% elif order.status == 'Cancelled' %}
-                    <input type="submit" value="Item Cancelled" class=" btn-danger btn-custom">
-                {% endif %}
+                    {% elif order.status == 'Cancelled' %}
+                        <input type="submit" value="Item Cancelled" class=" btn-danger btn-custom">
+                    {% endif %}
 
-                {% if order.status == 'Delivered' %}
+                    {% if order.status == 'Delivered' %}
                         <form action="{% url 'return_order' order.id %}" method="post">
-                        {% csrf_token %}
-                        <input type="submit" value="Return Order" class="btn btn-custom btn-danger">
-                    </form>
-                {% endif %}
+                            {% csrf_token %}
+                            <input type="submit" value="Return Order" class="btn btn-custom btn-danger">
+                        </form>
+                    {% endif %}
                 {% endfor %}
             </div>
             <div class="col-md-1">
                 <a href="{% url 'user_profile' %}">
                     <button class="btn btn-block btn-outline-primary-2">Back To Profile</button>
-                </a>                   
-            </div>    
+                </a>
+            </div>
         </div><!-- End .container -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->

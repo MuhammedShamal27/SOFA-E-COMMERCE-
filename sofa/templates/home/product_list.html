@@ -3,181 +3,73 @@
 {% block content %}
 
 <style>
-.product-image-size {
-width: 100%; /* Set your desired width */
-height: 200px; /* Maintain the aspect ratio */
+    .product-image-size {
+        width: 100%; /* Set your desired width */
+        height: 200px; /* Maintain the aspect ratio */
+    }
+    .selected-color {
+        border: 2px solid #ff0000; /* Add a red border for selected colors */
+        filter: blur(2px); /* Add a blur effect for selected colors */
 }
-.selected-color {
-    border: 2px solid #ff0000; /* Add a red border for selected colors */
-    filter: blur(2px); /* Add a blur effect for selected colors */
-}
-
-
 </style>
+
 <main class="main">
-	<div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
-		<div class="container">
-			<h1 class="page-title">Products<span></span></h1>
-		</div><!-- End .container -->
-	</div><!-- End .page-header -->
-	<nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
-		<div class="container">
-			{% comment %} <ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-				<li class="breadcrumb-item"><a href="#">Shop</a></li>
-				<li class="breadcrumb-item active" aria-current="page">Grid 3 Columns</li>
-			</ol> {% endcomment %}
-		</div><!-- End .container -->
-	</nav><!-- End .breadcrumb-nav -->
+    <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
+        <div class="container">
+            <h1 class="page-title">Products<span></span></h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+        <div class="container">
+            
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
 
-	<div class="page-content">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-9">
-					{% comment %} <div class="toolbox">
-						<div class="toolbox-left">
-							<div class="toolbox-info">
-								Showing <span>9 of 56</span> Products
-							</div><!-- End .toolbox-info -->
-						</div><!-- End .toolbox-left -->
+    <div class="page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="products mb-3">
+                        <div class="row justify-content-center">
+                            {% for product in products %}
+                                <div class="col-6 col-md-4 col-lg-4">
+                                    <div class="product product-7 text-center">
+                                        <figure class="product-media">
+                                            {% comment %} <span class="product-label label-new">New</span> {% endcomment %}
+                                            <a href="{% url 'product_detail' product.id %}">
+                                                <img src="{{product.product_image1.url}}" alt="Product image" class="product-image product-image-size">
+                                            </a>
 
-						<div class="toolbox-right">
-							<div class="toolbox-sort">
-								<label for="sortby">Sort by:</label>
-								<div class="select-custom">
-									<select name="sortby" id="sortby" class="form-control">
-										<option value="popularity" selected="selected">Most Popular</option>
-										<option value="rating">Most Rated</option>
-										<option value="date">Date</option>
-									</select>
-								</div>
-							</div><!-- End .toolbox-sort -->
-							<div class="toolbox-layout">
-								<a href="category-list.html" class="btn-layout">
-									<svg width="16" height="10">
-										<rect x="0" y="0" width="4" height="4" />
-										<rect x="6" y="0" width="10" height="4" />
-										<rect x="0" y="6" width="4" height="4" />
-										<rect x="6" y="6" width="10" height="4" />
-									</svg>
-								</a>
+                                            <div class="product-action-vertical">
+                                                <a href="{% url 'wishlist' product.id %}" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                            </div><!-- End .product-action-vertical -->
 
-								<a href="category-2cols.html" class="btn-layout">
-									<svg width="10" height="10">
-										<rect x="0" y="0" width="4" height="4" />
-										<rect x="6" y="0" width="4" height="4" />
-										<rect x="0" y="6" width="4" height="4" />
-										<rect x="6" y="6" width="4" height="4" />
-									</svg>
-								</a>
+                                            <div class="product-action">
+												{% if product.quantity > 0 %}
+                                                <a href="{% url 'add_to_cart' product.id  %}" class="btn-product btn-cart"><span>add to cart</span></a>
+                                            	{% else %}
+												<span class="btn-product btn-out-of-stock"><span>Out of Stock</span></span>
+                								{% endif %}
+											</div><!-- End .product-action -->
+                                        </figure><!-- End .product-media -->
 
-								<a href="category.html" class="btn-layout active">
-									<svg width="16" height="10">
-										<rect x="0" y="0" width="4" height="4" />
-										<rect x="6" y="0" width="4" height="4" />
-										<rect x="12" y="0" width="4" height="4" />
-										<rect x="0" y="6" width="4" height="4" />
-										<rect x="6" y="6" width="4" height="4" />
-										<rect x="12" y="6" width="4" height="4" />
-									</svg>
-								</a>
+                                        <div class="product-body">
+                                            <div class="product-cat">
+                                                <a href="{% url 'product_detail' product.id %}">{{product.category.category_name}}</a>
+                                            </div><!-- End .product-cat -->
 
-								<a href="category-4cols.html" class="btn-layout">
-									<svg width="22" height="10">
-										<rect x="0" y="0" width="4" height="4" />
-										<rect x="6" y="0" width="4" height="4" />
-										<rect x="12" y="0" width="4" height="4" />
-										<rect x="18" y="0" width="4" height="4" />
-										<rect x="0" y="6" width="4" height="4" />
-										<rect x="6" y="6" width="4" height="4" />
-										<rect x="12" y="6" width="4" height="4" />
-										<rect x="18" y="6" width="4" height="4" />
-									</svg>
-								</a>
-							</div><!-- End .toolbox-layout -->
-						</div><!-- End .toolbox-right -->
-					</div><!-- End .toolbox --> {% endcomment %}
+                                            <h3 class="product-title"><a href="{% url 'product_detail' product.id %}">{{product.product_name|truncatechars:35}}</a></h3><!-- End .product-title -->
 
-					<div class="products mb-3">
-						<div class="row justify-content-center">
-							
-							{% for product in products %}
-							<div class="col-6 col-md-4 col-lg-4">
-								<div class="product product-7 text-center">
-									<figure class="product-media">
-										{% comment %} <span class="product-label label-new">New</span> {% endcomment %}
-										<a href="{% url 'product_detail' product.id %}">
-											<img src="{{product.product_image1.url}}" alt="Product image" class="product-image product-image-size">
-										</a>
+                                            <div class="product-price">
+                                                ₹{{product.offer_price}}
+                                            </div><!-- End .product-price -->
+                                        </div><!-- End .product-body -->
+                                    </div><!-- End .product -->
+                                </div><!-- End .col-sm-6 col-lg-4 -->
+                            {% endfor %}
+                        </div><!-- End .row -->
+                    </div><!-- End .products -->
 
-										<div class="product-action-vertical">
-											<a href="{% url 'wishlist' product.id %}" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
-											{% comment %} <a href="popup/quickView.html" class="btn-product-icon btn-quickview" title="Quick view"><span>Quick view</span></a> {% endcomment %}
-											{% comment %} <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>Compare</span></a> {% endcomment %}
-										</div><!-- End .product-action-vertical -->
-
-										<div class="product-action">
-											<a href="{% url 'add_to_cart' product.id  %}" class="btn-product btn-cart"><span>add to cart</span></a>
-										</div><!-- End .product-action -->
-									</figure><!-- End .product-media -->
-
-									<div class="product-body">
-										<div class="product-cat">
-											<a href="{% url 'product_detail' product.id %}">{{product.category.category_name}}</a>
-										</div><!-- End .product-cat -->
-										<h3 class="product-title"><a href="{% url 'product_detail' product.id %}">{{product.product_name|truncatechars:35}}</a></h3><!-- End .product-title -->
-										<div class="product-price">
-											₹{{product.offer_price}}
-										</div><!-- End .product-price -->
-										<div class="ratings-container">
-											<div class="ratings">
-												<div class="ratings-val" style="width: 20%;"></div><!-- End .ratings-val -->
-											</div><!-- End .ratings -->
-											<span class="ratings-text">( 2 Reviews )</span>
-										</div><!-- End .rating-container -->
-
-										{% comment %} <div class="product-nav product-nav-thumbs">
-											<a href="#" class="active">
-												<img src="{{product.product_image1.url}}" alt="product desc">
-											</a>
-											<a href="#">
-												<img src="{{product.product_image1.url}}" alt="product desc">
-											</a>
-
-											<a href="#">
-												<img src="{{product.product_image1.url}}" alt="product desc">
-											</a>
-										</div><!-- End .product-nav --> {% endcomment %}
-									
-									</div><!-- End .product-body -->
-								</div><!-- End .product -->
-							</div><!-- End .col-sm-6 col-lg-4 -->
-							{% endfor %}    
-
-
-							
-
-						</div><!-- End .row -->
-					</div><!-- End .products -->
-
-					<!-- <nav aria-label="Page navigation">
-						<ul class="pagination justify-content-center">
-							<li class="page-item disabled">
-								<a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1" aria-disabled="true">
-									<span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
-								</a>
-							</li>
-							<li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-							<li class="page-item"><a class="page-link" href="#">2</a></li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li>
-							<li class="page-item-total">of 6</li>
-							<li class="page-item">
-								<a class="page-link page-link-next" href="#" aria-label="Next">
-									Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
-								</a>
-							</li>
-						</ul>
-					</nav> -->
 
 					<div class="pagination ">
 						<span class="step-links">
@@ -185,174 +77,138 @@ height: 200px; /* Maintain the aspect ratio */
 								<a href="?page=1">&laquo; first</a>
 								<a href="?page={{ products.previous_page_number }}" style="margin-left:20px;">previous</a>
 							{% endif %}
-
+					
 							<span class="current">
 								Page {{ products.number }} of {{ products.paginator.num_pages }}.
 							</span>
-
+					
 							{% if products.has_next %}
 								<a href="?page={{ products.next_page_number }}">next</a>
 								<a href="?page={{ products.paginator.num_pages }}" style="margin-left:20px;">last &raquo;</a>
 							{% endif %}
 						</span>
 					</div>
-				</div><!-- End .col-lg-9 -->
-				<aside class="col-lg-3 order-lg-first">
-					<div class="sidebar sidebar-shop">
-						<div class="widget widget-clean">
-							<label>Filters:</label>
-							<a href="#" class="sidebar-filter-clear"></a>
-						</div><!-- End .widget widget-clean -->
-						<form method="get" action="{% url 'product_list' %}">
-							{% csrf_token %}
-							<div class="widget widget-collapsible">
-								<h3 class="widget-title">
-									<a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
-										Category
-									</a>
-								</h3><!-- End .widget-title -->
-
-								<div class="collapse show" id="widget-1">
-									<div class="widget-body">
-										<div class="filter-items filter-items-count">
-											
-											{% for category in categories %}
-											<div class="filter-item">
-												<div class="custom-control custom-checkbox">
-													<input type="checkbox" class="custom-control-input" id="cat-{{ category.id }}" name="category" value="{{ category.id }}" {% if category.id|stringformat:"s" in selected_categories %}checked{% endif %}>
-													<label class="custom-control-label" for="cat-{{ category.id }}">{{ category.category_name }}</label>
-												</div><!-- End .custom-checkbox -->
-											</div><!-- End .filter-item -->
-										{% endfor %}
-										
-
-											
-										
-										</div><!-- End .filter-items -->
-									</div><!-- End .widget-body -->
-								</div><!-- End .collapse -->
-							</div><!-- End .widget -->
-
-							<div class="widget widget-collapsible">
-								<h3 class="widget-title">
-									<a data-toggle="collapse" href="#widget-2" role="button" aria-expanded="true" aria-controls="widget-2">
-										Material
-									</a>
-								</h3><!-- End .widget-title -->
-
-								<div class="collapse show" id="widget-2">
-									<div class="widget-body">
-										<div class="filter-items">
-											
-											{% comment %} <div class="filter-item">
-												<div class="custom-control custom-checkbox">
-													<input type="checkbox" class="custom-control-input" id="size-1">
-													<label class="custom-control-label" for="size-1">Velvet Fabric</label>
-												</div><!-- End .custom-checkbox -->
-											</div><!-- End .filter-item --> {% endcomment %}
-
-											{% for material in materials %}
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="material-{{ material }}" name="material" value="{{ material }}" {% if material in selected_materials %}checked{% endif %}>
-														<label class="custom-control-label" for="material-{{ material }}">{{ material }}</label>
+					</div><!-- End .col-lg-9 -->
+					<aside class="col-lg-3 order-lg-first">
+						<div class="sidebar sidebar-shop">
+							<div class="widget widget-clean">
+								<label>Filters:</label>
+								<a href="#" class="sidebar-filter-clear"></a>
+							</div><!-- End .widget widget-clean -->
+							<form method="get" action="{% url 'product_list' %}">
+								{% csrf_token %}
+								<div class="widget widget-collapsible">
+									<h3 class="widget-title">
+										<a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
+											Category
+										</a>
+									</h3><!-- End .widget-title -->
+					
+									<div class="collapse show" id="widget-1">
+										<div class="widget-body">
+											<div class="filter-items filter-items-count">
+												{% for category in categories %}
+													<div class="filter-item">
+														<div class="custom-control custom-checkbox">
+															<input type="checkbox" class="custom-control-input" id="cat-{{ category.id }}" name="category" value="{{ category.id }}" {% if category.id|stringformat:"s" in selected_categories %}checked{% endif %}>
+															<label class="custom-control-label" for="cat-{{ category.id }}">{{ category.category_name }}</label>
+														</div><!-- End .custom-checkbox -->
+													</div><!-- End .filter-item -->
+												{% endfor %}
+											</div><!-- End .filter-items -->
+										</div><!-- End .widget-body -->
+									</div><!-- End .collapse -->
+								</div><!-- End .widget -->
+					
+								<div class="widget widget-collapsible">
+									<h3 class="widget-title">
+										<a data-toggle="collapse" href="#widget-2" role="button" aria-expanded="true" aria-controls="widget-2">
+											Material
+										</a>
+									</h3><!-- End .widget-title -->
+					
+									<div class="collapse show" id="widget-2">
+										<div class="widget-body">
+											<div class="filter-items">
+												{% for material in materials %}
+													<div class="filter-item">
+														<div class="custom-control custom-checkbox">
+															<input type="checkbox" class="custom-control-input" id="material-{{ material }}" name="material" value="{{ material }}" {% if material in selected_materials %}checked{% endif %}>
+															<label class="custom-control-label" for="material-{{ material }}">{{ material }}</label>
+														</div>
 													</div>
-												</div>
-											{% endfor %}
-										
-										</div><!-- End .filter-items -->
-									</div><!-- End .widget-body -->
-								</div><!-- End .collapse -->
-							</div><!-- End .widget -->
-
-							<div class="widget widget-collapsible">
-								<h3 class="widget-title">
-									<a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="true" aria-controls="widget-3">
-										Colour
-									</a>
-								</h3><!-- End .widget-title -->
-
-								<div class="collapse show" id="widget-3">
-									<div class="widget-body">
-										<div class="filter-colors">
-											{% for color_option in color_options %}
-											<label class="color-option {% if color_option in selected_colors %}selected-color{% endif %}" style="background: {{ color_option }}; display: inline-block; padding: 10px; margin: 10px; border: 0px solid #ccc; border-radius: 10px;">
-												<input type="checkbox" class="custom-control-input" name="color" value="{{ color_option }}" {% if color_option in selected_colors %}checked{% endif %}>
-												<span class="sr-only">Color Name</span>
-											</label>
-										{% endfor %}
-										</div><!-- End .filter-colors -->
-									</div><!-- End .widget-body -->
-								</div><!-- End .collapse -->
-							</div><!-- End .widget -->
-
-							<div class="widget widget-collapsible">
-								<h3 class="widget-title">
-									<a data-toggle="collapse" href="#widget-4" role="button" aria-expanded="true" aria-controls="widget-4">
-										Style
-									</a>
-								</h3><!-- End .widget-title -->
-
-								<div class="collapse show" id="widget-4">
-									<div class="widget-body">
-										<div class="filter-items">
-											
-											{% for style in styles %}
-												<div class="filter-item">
-													<div class="custom-control custom-checkbox">
-														<input type="checkbox" class="custom-control-input" id="style-{{ style }}" name="style" value="{{ style }}" {% if style in selected_styles %}checked{% endif %}>
-														<label class="custom-control-label" for="style-{{ style }}">{{ style }}</label>
+												{% endfor %}
+											</div><!-- End .filter-items -->
+										</div><!-- End .widget-body -->
+									</div><!-- End .collapse -->
+								</div><!-- End .widget -->
+					
+								<div class="widget widget-collapsible">
+									<h3 class="widget-title">
+										<a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="true" aria-controls="widget-3">
+											Colour
+										</a>
+									</h3><!-- End .widget-title -->
+					
+									<div class="collapse show" id="widget-3">
+										<div class="widget-body">
+											<div class="filter-colors">
+												{% for color_option in color_options %}
+													<label class="color-option {% if color_option in selected_colors %}selected-color{% endif %}" style="background: {{ color_option }}; display: inline-block; padding: 10px; margin: 10px; border: 0px solid #ccc; border-radius: 10px;">
+														<input type="checkbox" class="custom-control-input" name="color" value="{{ color_option }}" {% if color_option in selected_colors %}checked{% endif %}>
+														<span class="sr-only">Color Name</span>
+													</label>
+												{% endfor %}
+											</div><!-- End .filter-colors -->
+										</div><!-- End .widget-body -->
+									</div><!-- End .collapse -->
+								</div><!-- End .widget -->
+					
+								<div class="widget widget-collapsible">
+									<h3 class="widget-title">
+										<a data-toggle="collapse" href="#widget-4" role="button" aria-expanded="true" aria-controls="widget-4">
+											Style
+										</a>
+									</h3><!-- End .widget-title -->
+					
+									<div class="collapse show" id="widget-4">
+										<div class="widget-body">
+											<div class="filter-items">
+												{% for style in styles %}
+													<div class="filter-item">
+														<div class="custom-control custom-checkbox">
+															<input type="checkbox" class="custom-control-input" id="style-{{ style }}" name="style" value="{{ style }}" {% if style in selected_styles %}checked{% endif %}>
+															<label class="custom-control-label" for="style-{{ style }}">{{ style }}</label>
+														</div>
 													</div>
-												</div>
-											{% endfor %}
-
-										</div><!-- End .filter-items -->
-									</div><!-- End .widget-body -->
-								</div><!-- End .collapse -->
-							</div><!-- End .widget -->
-
-							{% comment %} <div class="widget widget-collapsible">
-								<h3 class="widget-title">
-									<a data-toggle="collapse" href="#widget-5" role="button" aria-expanded="true" aria-controls="widget-5">
-										Price
-									</a>
-								</h3><!-- End .widget-title -->
-
-								<div class="collapse show" id="widget-5">
-									<div class="widget-body">
-										<div class="filter-price">
-											<div class="filter-price-text">
-												Price Range:
-												<span id="filter-price-range"></span>
-											</div><!-- End .filter-price-text -->
-
-											<div id="price-slider"></div><!-- End #price-slider -->
-										</div><!-- End .filter-price -->
-									</div><!-- End .widget-body -->
-								</div><!-- End .collapse -->
-							</div><!-- End .widget --> {% endcomment %}
-							<button type="submit" class="btn btn-primary">Apply Filters</button>
-						</form>	
-					</div><!-- End .sidebar sidebar-shop -->
-				</aside><!-- End .col-lg-3 -->
-			</div><!-- End .row -->
-		</div><!-- End .container -->
-	</div><!-- End .page-content -->
-</main><!-- End .main -->
-
+												{% endfor %}
+											</div><!-- End .filter-items -->
+										</div><!-- End .widget-body -->
+									</div><!-- End .collapse -->
+								</div><!-- End .widget -->
+					
+								<button type="submit" class="btn btn-primary">Apply Filters</button>
+							</form>
+						</div><!-- End .sidebar sidebar-shop -->
+					</aside><!-- End .col-lg-3 -->
+				</div><!-- End .row -->
+			</div><!-- End .container -->
+		</div><!-- End .page-content -->
+	</main><!-- End .main -->
+					
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
-    $(document).ready(function() {
-        // Add a class to selected colors when the page loads
-        $('.color-option input:checked').parent().addClass('selected-color');
+	$(document).ready(function() {
+		// Add a class to selected colors when the page loads
+		$('.color-option input:checked').parent().addClass('selected-color');
 
-        // Update the class on click
-        $('.color-option input').on('change', function() {
-            $('.color-option').removeClass('selected-color');
-            $('.color-option input:checked').parent().addClass('selected-color');
-        });
-    });
+		// Update the class on click
+		$('.color-option input').on('change', function() {
+			$('.color-option').removeClass('selected-color');
+			$('.color-option input:checked').parent().addClass('selected-color');
+		});
+	});
 </script>
 
-	
 {% endblock content %}
+					

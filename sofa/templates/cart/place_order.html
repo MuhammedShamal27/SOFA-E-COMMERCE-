@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block content %}
 
 <style>
+
 .messages{
     padding:20px;
     padding-left:12%;
 }
 .cart-discount{
-    margin:20px;
+    margin:20px 12%;
 }
 .address {
     border: 1px solid black;
@@ -26,11 +28,9 @@
     margin-bottom: 10px;
 }
 
-
 .payment input[type="radio"] {
     margin-right: 5px;
 }
-
 
 .payment input[type="radio"]:checked + label {
     color: yellow;
@@ -43,42 +43,74 @@
 p {
     margin-bottom: 10px; 
 }
+        .box {
+        display: flex;
+        width: 10px;
+    }
+        .messages {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+        display: none;
+        color: red;
+    }
+
+    .alert-success {
+        background-color: #dff0d8;
+        border-color: #d0e9c6;
+        color: #3c763d;
+    }
+
+    .alert-info {
+        background-color: #d9edf7;
+        border-color: #bce8f1;
+        color: #31708f;
+    }
+
+    .alert-warning {
+        background-color: #fcf8e3;
+        border-color: #faebcc;
+        color: #8a6d3b;
+    }
+
+    .alert-danger {
+        background-color: #f2dede;
+        border-color: #ebccd1;
+        color: #a94442;
+    }
+
+    .close {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 20px;
+        color: inherit;
+    }
 </style>
     
-    
-
-
-
 <main class="main">
     <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
         <div class="container">
             <h1 class="page-title">Place Order<span>for Shopping</span></h1>
         </div><!-- End .container -->
     </div><!-- End .page-header -->
+                                                {% for message in messages %}
+                                                <div class="messages alert alert-{{ message.tags }}">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    {{ message }}
+                                                </div>
+                                            {% endfor %}
     <nav aria-label="breadcrumb" class="breadcrumb-nav">
-        {% if messages %}
-            {% for msg in messages %}
-                {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-                    <div class="messages">
-                        <div style="color: #cc0000;">
-                            {{ msg }}
-                        </div>
-                    </div>
-                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                    <div class="messages">
-                        <div style="color: #cc0000;">
-                            {{ msg }}
-                        </div>
-                    </div>
-                {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                    <div class="messages">
-                        <div style="color: #00cc00;">
-                            {{ msg }}
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+
     </nav><!-- End .breadcrumb-nav -->
 
     <div class="page-content">
@@ -89,13 +121,18 @@ p {
                         {% csrf_token %}
                         <div class="input-group">
                             <input type="text" class="form-control" required placeholder="coupon code" name="coupon_code" id="couponCodeInput">
+
                             <div class="input-group-append">
                                 <p><input type="hidden" name="order_id" class="form-control" value="{{ order.id }}"></p>
                                 <button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
+
                             </div><!-- .End .input-group-append -->
-                        </div><!-- End .input-group -->
+                        </div>
+<!--                        <a href="" ><i class="fa-solid fa-ticket"></i><span> AVAILABLE COUPON</span></a>&lt;!&ndash; End .input-group &ndash;&gt;-->
                     </form>
                 </div><!-- End .cart-discount -->
+
+
             {% else %}
                 <div class="panel-collapse collapse coupon_form " id="coupon">
                     <div class="panel-body">
@@ -103,114 +140,118 @@ p {
                     </div>
                 </div>
             {% endif %}
-            </div><!-- End .cart-bottom -->
-            <div class="checkout">
-                <div class="container">
-                    <form>
-                        <div class="row">
+        </div><!-- End .cart-bottom -->
 
-                            <div class="col-lg-4">
-                                <div class="address">
-                                    <h5>Address</h5><hr>
-                                    <p><b>Name:</b><tt>{{address.first_name}}{{address.last_name}}</tt><br>
-                                        <b>Email:</b><tt>{{address.email}}</tt><br>
-                                        <b>Address:</b><tt>{{address.paddress}},{{address.locality}}</tt><br>
-                                        <b>Pincode:</b><tt>{{address.pincode}}</tt><br>
-                                        <b>Place:</b><tt>{{address.city}},{{address.state}}</tt><br>
-                                        <b>Phone:</b><tt>{{address.phone}}</tt></p>
-                                </div>        
-                            </div><!-- End .col-lg-4 -->
+        <div class="checkout">
+            <div class="container">
+                <form>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="address">
+                                <h5>Address</h5><hr>
+                                <p><b>Name:</b><tt>{{address.first_name}}{{address.last_name}}</tt><br>
+                                    <b>Email:</b><tt>{{address.email}}</tt><br>
+                                    <b>Address:</b><tt>{{address.paddress}},{{address.locality}}</tt><br>
+                                    <b>Pincode:</b><tt>{{address.pincode}}</tt><br>
+                                    <b>Place:</b><tt>{{address.city}},{{address.state}}</tt><br>
+                                    <b>Phone:</b><tt>{{address.phone}}</tt></p>
+                            </div>        
+                        </div><!-- End .col-lg-4 -->
 
-                            <div class="col-lg-4">
-                                <div class="payment">
-                                    <h5>Select Payment</h5><hr>
-                                    <label>
-                                        <input type="radio" name="payment_option" id="wallet" value="wallet">
-                                        Wallet
-                                    </label><br>
+                        <div class="col-lg-4">
+                            <div class="payment">
+                                <h5>Select Payment</h5><hr>
+                                <label>
+                                    <input type="radio" name="payment_option" id="wallet" value="wallet">
+                                    Wallet
+                                </label><br>
 
-                                    <label>
-                                        <input type="radio" name="payment_option" id="cash_on_delivery" value="cash_on_delivery">
-                                        Cash on Delivery
-                                    </label><br>
+                                <label>
+                                    <input type="radio" name="payment_option" id="cash_on_delivery" value="cash_on_delivery">
+                                    Cash on Delivery
+                                </label><br>
 
-                                    <label>
-                                        <input type="radio" name="payment_option" id="razor_pay" value="razor_pay">
-                                        Razor Pay
-                                    </label>
-                                </div>        
-                            </div><!-- End .col-lg-4 -->
+                                <label>
+                                    <input type="radio" name="payment_option" id="razor_pay" value="razor_pay">
+                                    Razor Pay
+                                </label>
+                            </div>        
+                        </div><!-- End .col-lg-4 -->
 
-                            <hr>
+                        <hr>
 
-                            <a href="{% url 'index' %}" ><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
-                        </div><!-- End .row -->
-                        <aside class="col-lg-12">
-                            <div class="summary">
-                                <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+                        <a href="{% url 'index' %}" ><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+                    </div><!-- End .row -->
 
-                                <table class="table table-summary">
-                                    <thead>
+                    <aside class="col-lg-12">
+                        <div class="summary">
+                            <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+
+                            <table class="table table-summary">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Name</th>
+                                        <th>Quantity</th>
+                                        <th>Unit Price</th>
+                                        <th>Total</th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for order_product in cart_items %}
                                         <tr>
-                                            <th>Product</th>
-                                            <th>Name</th>
-                                            <th>Quantity</th>
-                                            <th>Unit Price</th>
-                                            <th>Total</th>
+                                            <td class="product-image">
+                                                <a href="#"><img src="{{ order_product.product.product_image1.url }}" alt="Product image" style="width: 50px; height: auto;"></a>
+                                            </td>
+                                            <td class="product-name">
+                                                <a href="#">{{ order_product.product.product_name|truncatechars:15 }}</a>
+                                            </td>
+                                            <td class="product-quantity">{{ order_product.quantity }}</td>
+                                            <td class="product-unit-price">{{ order_product.product.offer_price }}</td>
+                                            <td class="product-total">₹{{ order_product.sub_total }}</td>
                                         </tr>
-                                    </thead>
+                                    {% endfor %}
 
-                                    <tbody>
-                                        {% for order_product in cart_items %}
-                                            <tr>
-                                                <td class="product-image"><a href="#"><img src="{{ order_product.product.product_image1.url }}" alt="Product image" style="width: 50px; height: auto;"></a></td>
-                                                <td class="product-name"><a href="#">{{ order_product.product.product_name|truncatechars:15 }}</a></td>
-                                                <td class="product-quantity">{{ order_product.quantity }}</td>
-                                                <td class="product-unit-price">{{ order_product.product.offer_price }}</td>
-                                                <td class="product-total">₹{{ order_product.sub_total }}</td>
-                                            </tr>
-                                        {% endfor %}
+                                    <tr>
+                                        <td colspan="3" class="shipping-label">Shipping:</td>
+                                        <td></td>
+                                        <td class="shipping-value">Free shipping</td>
+                                    </tr>
+                                    <tr class="summary-total">
+                                        <td colspan="3">Total Paid:</td>
+                                        <td></td>
+                                        <td class="total-value">₹{{grand_total}}</td>
+                                    </tr><!-- End .summary-total -->
+                                </tbody>
+                            </table><!-- End .table table-summary -->
 
-                                        <tr>
-                                            <td colspan="3" class="shipping-label">Shipping:</td>
-                                            <td></td>
-                                            <td class="shipping-value">Free shipping</td>
-                                        </tr>
-                                        <tr class="summary-total">
-                                            <td colspan="3">Total Paid:</td>
-                                            <td></td>
-                                            <td class="total-value">₹{{grand_total}}</td>
-                                        </tr><!-- End .summary-total -->
-                                    </tbody>
-                                </table><!-- End .table table-summary -->
-
-                                <div class="accordion-summary" id="accordion-payment"></div><!-- End .accordion -->
-                                <div>
-                                    <div class="col-sm-3">
-                                        <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                                        <a href="{% url 'cash_on_delivery' order.id %}" id="cash-on-delivery-btn" style="display: none;" class="btn btn-primary btn-lg btn-block">Cash on Delivery Button</a>
-                                        <a id="rzp-button1" class="btn btn-primary btn-lg btn-block" style="display: none;" >Pay with Razorpay</a>
-                                        <a href="{% url 'wallet_pay' order.id %}" id="wallet-btn" class="btn btn-primary btn-lg btn-block" style="display: none;" >Pay with Wallet</a>
-                                    </div>
+                            <div class="accordion-summary" id="accordion-payment"></div><!-- End .accordion -->
+                            <div>
+                                <div class="col-sm-3">
+                                    <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                    <a href="{% url 'cash_on_delivery' order.id %}" id="cash-on-delivery-btn" style="display: none;" class="btn btn-primary btn-lg btn-block">Cash on Delivery Button</a>
+                                    <a id="rzp-button1" class="btn btn-primary btn-lg btn-block" style="display: none;" >Pay with Razorpay</a>
+                                    <a href="{% url 'wallet_pay' order.id %}" id="wallet-btn" class="btn btn-primary btn-lg btn-block" style="display: none;" >Pay with Wallet</a>
                                 </div>
-                            </div><!-- End .summary -->
-                        </aside><!-- End .col-lg-3 -->  
-                    </form>        
-                </div><!-- End .container -->
-            </div><!-- End .checkout -->
-        </div><!-- End .page-content -->
-    </main><!-- End .main -->
-
+                            </div>
+                        </div><!-- End .summary -->
+                    </aside><!-- End .col-lg-3 -->  
+                </form>        
+            </div><!-- End .container -->
+        </div><!-- End .checkout -->
+    </div><!-- End .page-content -->
+</main><!-- End .main -->
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" integrity="sha512-GWzVrcGlo0TxTRvz9ttioyYJ+Wwk9Ck0G81D+eO63BaqHaJ3YZX9wuqjwgfcV/MrB2PhaVX9DkYVhbFpStnqpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const cashOnDeliveryBtn = document.getElementById('cash-on-delivery-btn');
     const razorpayBtn = document.getElementById('rzp-button1');
     const walletBtn = document.getElementById('wallet-btn');
@@ -233,36 +274,105 @@ p {
         });
     });
 });
-
 </script>
 
 <script>
 var orderAmountInPaise = {{ order.order_total|floatformat:2 }} * 10;
 var roundedAmount = Math.round(orderAmountInPaise);
-  var options = {
-  	"key": "rzp_test_3vjh1FdAIP35KY",
-  	"amount": roundedAmount,
-  	"currency": "INR",
-  	"name": "Sofa",
-  	"description": "Purchase",
-  	"image": "https://example.com/your_logo",
-  	"order_id": "{{ payment.id }}",
-  	"handler": function (response) {
-  		alert("Payment successful!");
-  		var orderid = "{{ order.id }}"; // Get the order number
-  		window.location.href = '/cart/confirm_razorpay_payment/' + orderid + '/';
-  	},
 
-  	"theme": {
-  		"color": "#3399cc"
-  	}
-  };
+var options = {
+    "key": "rzp_test_3vjh1FdAIP35KY",
+    "amount": roundedAmount,
+    "currency": "INR",
+    "name": "Sofa",
+    "description": "Purchase",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{ payment.id }}",
+    "handler": function (response) {
+        alert("Payment successful!");
+        var orderid = "{{ order.id }}"; // Get the order number
+        window.location.href = '/cart/confirm_razorpay_payment/' + orderid + '/';
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
 
-  var rzp1 = new Razorpay(options);
-  document.getElementById('rzp-button1').addEventListener('click', function (e) {
-  	rzp1.open();
-  	e.preventDefault();
-  });
+var rzp1 = new Razorpay(options);
+
+document.getElementById('rzp-button1').addEventListener('click', function (e) {    // Prevent the default action (Razorpay payment process)
+    e.preventDefault();
+
+    var orderId = '{{ order.id }}'; // Assign order ID to a JavaScript variable
+    console.log(orderId); // Verify if the order ID is correctly passed
+
+    fetch('http://127.0.0.1:8000/cart/check_product_quantities/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ order_id: orderId }) // Pass order ID to the backend
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        if (data.valid) {
+            rzp1.open();
+        } else {
+            alert('Product quantities in cart exceed available quantities. Please review your cart.');
+            window.location.href = '/cart/user_cart/';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+// Function to get CSRF token from cookie
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+</script>
+
+
+<script>
+    // Function to show pop-up messages
+    function showMessages() {
+        // Get all elements with class 'messages'
+        var messages = document.getElementsByClassName('messages');
+
+        // Loop through each message element
+        for (var i = 0; i < messages.length; i++) {
+            // Show the message element
+            messages[i].style.display = 'block';
+
+            // Create a closure to capture the value of i
+            (function(index) {
+                // Hide the message after 5 seconds
+                setTimeout(function() {
+                    messages[index].style.display = 'none';
+                }, 5000); // 5000 milliseconds = 5 seconds
+            })(i);
+        }
+    }
+
+    // Call the function when the DOM content is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        showMessages();
+    });
 </script>
 
 {% endblock content %}

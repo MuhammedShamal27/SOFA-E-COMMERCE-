@@ -29,17 +29,17 @@
                                 <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab" href="#tab-dashboard" role="tab" aria-controls="tab-dashboard" aria-selected="true">Dashboard</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" id="tab-address-link" href="{% url 'profile' user.id %}" role="tab">Profile</a>
+                                <a class="nav-link" id="tab-address-link" href="{% url 'profile' user.id %}" role="tab">Profile</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" id="tab-address-link" href="{% url 'user_address' user.id %}" role="tab">Address</a>
+                                <a class="nav-link" id="tab-address-link" href="{% url 'user_address' user.id %}" role="tab">Address</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="tab-orders-link" href="{% url 'user_order' %}" role="tab">Orders</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="tab-wallet-link" href="{% url 'user_wallet' %}" role="tab">Wallet</a>
-                            </li>    
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="tab-coupon-link" href="{% url 'user_coupon' %}" role="tab">Coupon</a>
                             </li>
@@ -53,7 +53,6 @@
                                     <br>
                                     From your account dashboard you can view your <a href="#tab-orders" class="tab-trigger-link link-underline">recent orders</a>, manage your <a href="#tab-address" class="tab-trigger-link">shipping and billing addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.</p>
                             </div><!-- .End .tab-pane -->
-
                         </div>
                     </div><!-- End .col-lg-9 -->
                 </div><!-- End .row -->

@@ -6,6 +6,7 @@
 <head>
     <!-- ... existing head content ... -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+
 </head>
 {% endcomment %}
 <style>
@@ -27,32 +28,49 @@
     .form-container {
         margin-bottom: 20px; /* Adjust the margin as needed */
     }
+
+    .messages-box {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    }
+
+    .message.error {
+        color: red;
+    }
+
+    .message.success {
+        color: #155724;
+    }
+
+    .alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+
 </style>
 
 
-{% if messages %}
-    {% for msg in messages %}
-        {% if msg.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-            <div class="messages">
-                <div style="color: #cc0000;">
-                    {{ msg }}
-                </div>
-            </div>
-        {% elif msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <div class="messages">
-                <div style="color: #cc0000;">
-                    {{ msg }}
-                </div>
-            </div>
-        {% elif msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-            <div class="messages">
-                <div style="color: #00cc00;">
-                    {{ msg }}
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
-{% endif %}
 
 <section class="content-main">
     <div class="content-header">
@@ -64,30 +82,19 @@
             
         </div>
     </div>
+                           {% if messages %}
+                        <div class="messages-box">
+                            {% for msg in messages %}
+                                <div class="message {{ msg.tags }}">
+                                    {{ msg }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
     <div class="card mb-4">
         <header class="card-header">
             <div class="row gx-3">
-                <!-- 
-                <div class="col-lg-4 mb-lg-0 mb-15 me-auto">
-                    <input type="text" placeholder="Search..." class="form-control">
-                </div>
-                <div class="col-lg-2 col-6">
-                    <div class="custom_select">
-                        <select class="form-select select-nice">
-                            <option selected>Categories</option>
-                            <option>Technology</option>
-                            <option>Fashion</option>
-                            <option>Home Decor</option>
-                            <option>Healthy</option>
-                            <option>Travel</option>
-                            <option>Auto-car</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-6">
-                    <input type="date" class="form-control" name="">
-                </div>
-                -->
             </div>
         </header> <!-- card-header end// -->
         
@@ -102,6 +109,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">Title: {{ banner.title }}</h5>
                                 <p class="card-text">Sub Title: {{ banner.subtitle }}</p>
+                                <a href="{% url 'delete_banner' banner.id %}">DELETE   <i class="fa-solid fa-trash"></i></a>
                             </div>
                         </div>
                     </div>
@@ -113,6 +121,7 @@
                 <div class="col-12 form-container">
                     <form method='post' enctype="multipart/form-data">
                         {% csrf_token %}
+
                         <div class="row">
                             <aside class="col-md-4 col-lg-6">
                                 <div class="card mb-4">
@@ -139,4 +148,19 @@
     </div> <!-- row.// -->
 </section> <!-- content-main end// -->
 
+<script>
+    // Function to hide the messages and their parent element after 5 seconds
+    function hideMessages() {
+        var messages = document.querySelectorAll('.message');
+        messages.forEach(function(message) {
+            setTimeout(function() {
+                message.parentElement.style.display = 'none';
+            }, 5000);
+        });
+    }
+
+    // Call the function when the page loads
+    window.onload = hideMessages;
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" integrity="sha512-GWzVrcGlo0TxTRvz9ttioyYJ+Wwk9Ck0G81D+eO63BaqHaJ3YZX9wuqjwgfcV/MrB2PhaVX9DkYVhbFpStnqpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 {% endblock content %}

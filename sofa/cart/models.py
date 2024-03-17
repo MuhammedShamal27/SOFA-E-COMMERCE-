@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from home.models import *
 
+
+
+
 # Create your models here.
 class Cart(models.Model):
     cart_id=models.CharField(max_length=50, blank=True)

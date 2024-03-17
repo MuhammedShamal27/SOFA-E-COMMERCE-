@@ -4,127 +4,120 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <style>
-        .btn.page.active {
-            background-color: #088178;
-            color: #fff;
-        }
+    .btn.page.active {
+        background-color: #088178;
+        color: #fff;
+    }
 
-        .btn.page {
-            background-color: #fff; /* Set background color to white for non-active pages */
-            color: #28a745; /* Set text color to green */
-            border-color: #28a745; /* Set border color to green */
-        }
-    </style>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Order List </h2>
-
-                </div>
-                <div>
-                    
-                </div>
-            </div>
-            <div class="card mb-4">
-                <header class="card-header ">
-                    <div class="row gx-3 d-flex justify-content-between">
-                        <div class="col-lg-4 col-md-6 d-flex align-items-center">
-                            <form method="get">
-                                <div class="d-flex">
+    .btn.page {
+        background-color: #fff; /* Set background color to white for non-active pages */
+        color: #28a745; /* Set text color to green */
+        border-color: #28a745; /* Set border color to green */
+    }
+</style>
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Order List </h2>
+        </div>
+        <div>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header ">
+            <div class="row gx-3 d-flex justify-content-between">
+                <div class="col-lg-4 col-md-6 d-flex align-items-center">
+                    <form method="get">
+                        <div class="d-flex">
                             <input type="text" placeholder="Search..." class="form-control" name="search">
                             <button type="submit" class="btn btn-primary ms-2" style="padding:8px; background-color:#536764; color:white; "><i class="fa-solid fa-magnifying-glass"></i></button>
-                                </div>
-                            </form>
                         </div>
-
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <form class="d-flex" method="get" action="{% url 'orders' %}">
-                                <select name="status" id="status" class="form-select me-2">
-                                    <option value="all" {% if selected_status == 'all' %}selected{% endif %}>All</option>
-                                    <option value="Delivered" {% if selected_status == 'Delivered' %}selected{% endif %}>Delivered</option>
-                                    <option value="Cancelled" {% if selected_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
-                                    <option value="New" {% if selected_status == 'New' %}selected{% endif %}>New</option>
-                                    <option value="Returned" {% if selected_status == 'Returned' %}selected{% endif %}>Returned</option>
-                                </select>
-                                <button type="submit" class="btn" style="padding:4px; background-color:#536764; color:white; "><i class="fa-solid fa-sort"></i></button>
-                            </form>
-                        </div>
-
-                    </div>
-                </header>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>#ID</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Payment</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col" class="text-end"> Action </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for order in orders %}
-                                <tr>
-                                    <td>{{order.order_number}}</td>
-                                    <td><b>{{order.user.username}}</b></td>
-                                    <td>{{order.user.email}}</td>
-                                    <td>₹{{order.order_total|floatformat:2 }}</td>
-<!--                                    {% for order_product in order.orderproduct_set.all %}-->
-<!--                                        <td>{{ order_product.payment.payment_method }}</td>-->
-<!--                                    {% endfor %}-->
-                                    {% if order.orderproduct_set.exists %}
-                                        {% with first_order_product=order.orderproduct_set.first %}
-                                            <td>{{ first_order_product.payment.payment_method }}</td>
-                                        {% endwith %}
-                                    {% endif %}
-
-                                    <td>
-                                        {% if order.status == 'New' and not order.cancelled %}
-                                            <span class="badge rounded-pill alert-warning">Processing</span>
-                                        {% elif order.status == 'Cancelled' %}
-                                            <span class="badge rounded-pill alert-danger">Cancelled</span>
-                                        {% endif %}
-                                        {% if order.status == 'Delivered' %}
-                                            <span class="badge rounded-pill alert-info">Delivered</span>
-                                        {% endif %}
-                                        {% if order.status == 'Returned' %}
-                                            <span class="badge rounded-pill alert-primary">Returned</span>
-                                        {% endif %}
-                                    </td>
-
-                                    <td>{{order.created_at}}</td>
-
-                                    <td class="text-end">
-                                        <a href="{% url 'order_details' order.id %}" class="btn btn-md rounded font-sm">Detail</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                     <div class="mx-auto">
-                            {% if orders.paginator.num_pages > 1 %}
-                            <hr>
-                            <div class="text-center">
-                                {% for pg in orders.paginator.page_range %}
-                                <a href="?page={{pg}}" class="btn btn-sm page {% if orders.number == pg %} active {% endif %}">{{pg}}</a>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-                            <br>
-
+                    </form>
                 </div>
+
+                <div class="col-lg-2 col-6 col-md-3">
+                    <form class="d-flex" method="get" action="{% url 'orders' %}">
+                        <select name="status" id="status" class="form-select me-2">
+                            <option value="all" {% if selected_status == 'all' %}selected{% endif %}>All</option>
+                            <option value="Delivered" {% if selected_status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                            <option value="Cancelled" {% if selected_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            <option value="New" {% if selected_status == 'New' %}selected{% endif %}>New</option>
+                            <option value="Returned" {% if selected_status == 'Returned' %}selected{% endif %}>Returned</option>
+                        </select>
+                        <button type="submit" class="btn" style="padding:4px; background-color:#536764; color:white; "><i class="fa-solid fa-sort"></i></button>
+                    </form>
+                </div>
+
+            </div>
+        </header>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Payment</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Date</th>
+                            <th scope="col" class="text-end"> Action </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{order.order_number}}</td>
+                            <td><b>{{order.user.username}}</b></td>
+                            <td>{{order.user.email}}</td>
+                            <td>₹{{order.order_total|floatformat:2 }}</td>
+
+                            {% if order.orderproduct_set.exists %}
+                            {% with first_order_product=order.orderproduct_set.first %}
+                            <td>{{ first_order_product.payment.payment_method }}</td>
+                            {% endwith %}
+                            {% endif %}
+
+                            <td>
+                                {% if order.status == 'New' and not order.cancelled %}
+                                <span class="badge rounded-pill alert-warning">Processing</span>
+                                {% elif order.status == 'Cancelled' %}
+                                <span class="badge rounded-pill alert-danger">Cancelled</span>
+                                {% endif %}
+                                {% if order.status == 'Delivered' %}
+                                <span class="badge rounded-pill alert-info">Delivered</span>
+                                {% endif %}
+                                {% if order.status == 'Returned' %}
+                                <span class="badge rounded-pill alert-primary">Returned</span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{order.created_at}}</td>
+
+                            <td class="text-end">
+                                <a href="{% url 'order_details' order.id %}" class="btn btn-md rounded font-sm">Detail</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
-        </section>
+            <div class="mx-auto">
+                {% if orders.paginator.num_pages > 1 %}
+                <hr>
+                <div class="text-center">
+                    {% for pg in orders.paginator.page_range %}
+                    <a href="?page={{pg}}" class="btn btn-sm page {% if orders.number == pg %} active {% endif %}">{{pg}}</a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <br>
+        </div>
+    </div>
+
+</section>
 
 {% endblock %}

@@ -3,13 +3,63 @@
 
 {% block content %}
 
+
+<style>
+    .messages {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+        display: none;
+        color: red;
+    }
+
+    .alert-success {
+        background-color: #dff0d8;
+        border-color: #d0e9c6;
+        color: #3c763d;
+    }
+
+    .alert-info {
+        background-color: #d9edf7;
+        border-color: #bce8f1;
+        color: #31708f;
+    }
+
+    .alert-warning {
+        background-color: #fcf8e3;
+        border-color: #faebcc;
+        color: #8a6d3b;
+    }
+
+    .alert-danger {
+        background-color: #f2dede;
+        border-color: #ebccd1;
+        color: #a94442;
+    }
+
+    .close {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 20px;
+        color: inherit;
+    }
+
+</style>
+
 <main class="main">
     <div class="page-header text-center" style="background-image: url('{% static 'assets/images/page-header-bg.jpg' %}')">
         <div class="container">
             <h1 class="page-title">Edit Profile</h1>
         </div><!-- End .container -->
     </div><!-- End .page-header -->
-    
 
     <div class="page-content">
         <div class="dashboard">
@@ -35,12 +85,20 @@
                     <div class="col-md-8 col-lg-9">
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard-link">
-                                <p>Hello <span class="font-weight-normal text-dark">User</span> <br> <h6>This  will  Update  Your  All  Infromattion  Fill  It  Carefully</h6>.</p><hr>
+                                <p>Hello <span class="font-weight-normal text-dark">User</span> <br> <h6>This  will  Update  Your  All  Information  Fill  It  Carefully</h6>.</p><hr>
                             </div><!-- .End .tab-pane -->
 
                             <div class="tab-pane fade show active" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
                                 <form method='post' action="#" enctype="multipart/form-data">
                                     {% csrf_token %}
+                                    {% for message in messages %}
+                                                <div class="messages alert alert-{{ message.tags }}">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                    {{ message }}
+                                                </div>
+                                            {% endfor %}
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <label>First Name *</label>
@@ -73,5 +131,31 @@
         </div><!-- End .dashboard -->
     </div><!-- End .page-content -->
 </main><!-- End .main -->
+
+    <script>
+            // Function to show pop-up messages
+            function showMessages() {
+                // Get all elements with class 'messages'
+                var messages = document.getElementsByClassName('messages');
+
+                // Loop through each message element
+                for (var i = 0; i < messages.length; i++) {
+                    // Show the message element
+                    messages[i].style.display = 'block';
+
+                    // Create a closure to capture the value of i
+                    (function(index) {
+                        // Hide the message after 5 seconds
+                        setTimeout(function() {
+                            messages[index].style.display = 'none';
+                        }, 5000); // 5000 milliseconds = 5 seconds
+                    })(i);
+                }
+            }
+
+            // Call the function when the page loads
+            window.onload = showMessages;
+
+    </script>
 
 {% endblock content %}

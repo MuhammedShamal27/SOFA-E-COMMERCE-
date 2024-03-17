@@ -2,6 +2,45 @@
 {% load static %}
 {% block content %}
 
+<style>
+    .messages-box {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+}
+
+.message {
+    margin-bottom: 10px;
+    color:red;
+}
+
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+
+</style>
 <div class="container-xxl flex-grow-1 container-p-y">
     <br>
     <div class="row">
@@ -17,17 +56,15 @@
         {% csrf_token %}
 
         <div class="row m-5 p-3" style="background-color:white;">
-            {% if messages %}
-                {% for msg in messages %}
-                    {% if msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                        <div class="messages">
-                            <div style="color: #cc0000;">
-                                {{ msg }}
-                            </div>
+                {% if messages %}
+                <div class="messages-box">
+                    {% for msg in messages %}
+                        <div class="message {{ msg.tags }}">
+                            {{ msg }}
                         </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
             <br><br>
 
             <div class="col-lg-6 primary">
@@ -69,5 +106,20 @@
 <hr>
 <br>
 <hr>
+
+<script>
+    // Function to hide the messages and their parent element after 5 seconds
+    function hideMessages() {
+        var messages = document.querySelectorAll('.message');
+        messages.forEach(function(message) {
+            setTimeout(function() {
+                message.parentElement.style.display = 'none';
+            }, 5000);
+        });
+    }
+
+    // Call the function when the page loads
+    window.onload = hideMessages;
+</script>
 
 {% endblock content %}

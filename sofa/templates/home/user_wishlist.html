@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block content %}
 
 <main class="main">
@@ -32,37 +33,7 @@
                 </thead>
 
                 <tbody>
-                    {% comment %} <tr>
-                        <td class="product-col">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img src="assets/images/products/table/product-1.jpg" alt="Product image">
-                                    </a>
-                                </figure>
 
-                                <h3 class="product-title">
-                                    <a href="#">Beige knitted elastic runner shoes</a>
-                                </h3><!-- End .product-title -->
-                            </div><!-- End .product -->
-                        </td>
-                        <td class="price-col">₹84.00</td>
-                        <td class="stock-col"><span class="in-stock">In stock</span></td>
-                        <td class="action-col">
-                            <div class="dropdown">
-                            <button class="btn btn-block btn-outline-primary-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="icon-list-alt"></i>Select Options
-                            </button>
-
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">First option</a>
-                                <a class="dropdown-item" href="#">Another option</a>
-                                <a class="dropdown-item" href="#">The best option</a>
-                              </div>
-                            </div>
-                        </td>
-                        <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-                    </tr> {% endcomment %}
                     {% for wishlist_item in wishlist_items %}
                     <tr>
                         <td class="product-col">
@@ -79,49 +50,28 @@
                             </div><!-- End .product -->
                         </td>
                         <td class="price-col">₹{{wishlist_item.product.offer_price}}</td>
-                        <td class="stock-col"><span class="in-stock">In stock</span></td>
+                        <td class="stock-col">
+                        {% if wishlist_item.product.quantity > 0 %}
+                                <span class="in-stock">In stock</span>
+                            {% else %}
+                                <span class="out-of-stock">Out of stock</span>
+                            {% endif %}
                         <td class="action-col">
-                            
+                            {% if wishlist_item.product.quantity > 0 %}
                             <form action="{% url 'add_to_cart_from_wishlist' wishlist_item.id %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="size_id" value="{{ wishlist_item.productattribute_set.first.id }}">
                                 <button type="submit" class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to Cart</button>
                             </form>
+                        {% else %}
+                                <button class="btn btn-block btn-outline-primary-2" disabled><i class="icon-cart-plus"></i>Out of Stock</button>
+                            {% endif %}
                             
-                            
-                            
-                            {% comment %} <form action="{% url 'add_to_cart_from_whishlist' wishlist_item.id %}" method="post">
-                                {% csrf_token %}
-                            <a href="{% url 'add_to_cart_from_whishlist' wishlist_item.id %}" >
-                                <input type="hidden" name="size_id" value="">
-                                <button type="submit" class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to Cart</button>
-                            </a>
-                            </form> {% endcomment %}
                         </td>
                         <td class="remove-col"><a href="{% url 'remove_user_wishlist' product_id=wishlist_item.id %}" ><button class="btn-remove"><i class="icon-close"></i></button></a></td>
                     </tr>
                     {% endfor %}
-                    {% comment %} <tr>
-                        <td class="product-col">
-                            <div class="product">
-                                <figure class="product-media">
-                                    <a href="#">
-                                        <img src="assets/images/products/table/product-3.jpg" alt="Product image">
-                                    </a>
-                                </figure>
 
-                                <h3 class="product-title">
-                                    <a href="#">Orange saddle lock front chain cross body bag</a>
-                                </h3><!-- End .product-title -->
-                            </div><!-- End .product -->
-                        </td>
-                        <td class="price-col">₹52.00</td>
-                        <td class="stock-col"><span class="out-of-stock">Out of stock</span></td>
-                        <td class="action-col">
-                            <button class="btn btn-block btn-outline-primary-2 disabled">Out of Stock</button>
-                        </td>
-                        <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
-                    </tr> {% endcomment %}
                 </tbody>
             </table><!-- End .table table-wishlist -->
             <div class="col-md-1">
