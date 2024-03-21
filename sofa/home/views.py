@@ -109,7 +109,7 @@ def product_list(request):
 def product_detail(request, p_id):
     if not request.user.is_active:
         logout(request)  # Log out the blocked user
-        messages.error(request, "Your account has been blocked. Please sign in again.")
+        messages.error(request, "Please login.")
         return redirect("signin")  # Redirect to the sign-in page
 
     products = Products.objects.filter(soft_delete=False)[4:8]

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Products(models.Model):
     product_name = models.CharField(max_length=200)
     material=models.CharField(max_length=100, blank=True, null=True)
-    orginal_price = models.CharField()
+    orginal_price = models.IntegerField()
     offer_price = models.IntegerField()
     style=models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField()
@@ -24,6 +24,7 @@ class Products(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey('Category', on_delete=models.CASCADE,default=False, blank=True, null=True)
     soft_delete = models.BooleanField(default=False)
+    cropped_image_paths = models.JSONField(default=list, blank=True, null=True)
 
 
     def __str__(self):

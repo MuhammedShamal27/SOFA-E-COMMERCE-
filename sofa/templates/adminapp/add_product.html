@@ -111,71 +111,84 @@
                         </div>
                     </div>
                 </div> <!-- card end// -->
+
+
                 <div class="card mb-4">
                     <div class="card-body">
-                        <div id="imageContainer1">
-                            <label class="form-label">Image 1</label>
-                            <input class="form-control" type="file" id="image1" name="image1">
-                            <div id="imageWrapper1" style="display: none;">
-                                <img id="imagePreview1" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
-                                <button type="button" id="cropButton1" class="btn btn-primary small-btn">Crop</button>
-                            </div>
-                            <input type="hidden" name="crop_x1" id="cropX1">
-                            <input type="hidden" name="crop_y1" id="cropY1">
-                            <input type="hidden" name="crop_width1" id="cropWidth1">
-                            <input type="hidden" name="crop_height1" id="cropHeight1">
-                        </div>
-                        <div id="imageContainer2">
-                            <label class="form-label">Image 2</label>
-                            <input class="form-control" type="file" id='image2' name='image2'>
-                            <div id="imageWrapper2" style="display: none;">
-                                <img id="imagePreview2" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
-                                <button type="button" id="cropButton2" class="btn btn-primary small-btn">Crop</button>
-                            </div>
-                            <input type="hidden" name="crop_x2" id="cropX2">
-                            <input type="hidden" name="crop_y2" id="cropY2">
-                            <input type="hidden" name="crop_width2" id="cropWidth2">
-                            <input type="hidden" name="crop_height2" id="cropHeight2">
-                        </div>
-                        <div id="imageContainer3">
-                            <label class="form-label">Image 3</label>
-                            <input class="form-control" type="file" id='image3' name='image3'>
-                            <div id="imageWrapper3" style="display: none;">
-                                <img id="imagePreview3" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
-                                <button type="button" id="cropButton3" class="btn btn-primary small-btn">Crop</button>
-                            </div>
-                            <input type="hidden" name="crop_x3" id="cropX3">
-                            <input type="hidden" name="crop_y3" id="cropY3">
-                            <input type="hidden" name="crop_width3" id="cropWidth3">
-                            <input type="hidden" name="crop_height3" id="cropHeight3">
-                        </div>
-                        <div id="imageContainer4">
-                            <label class="form-label">Image 4</label>
-                            <input class="form-control" type="file" id='image4' name='image4'>
-                            <div id="imageWrapper4" style="display: none;">
-                                <img id="imagePreview4" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
-                                <button type="button" id="cropButton4" class="btn btn-primary small-btn">Crop</button>
-                            </div>
-                            <input type="hidden" name="crop_x4" id="cropX4">
-                            <input type="hidden" name="crop_y4" id="cropY4">
-                            <input type="hidden" name="crop_width4" id="cropWidth4">
-                            <input type="hidden" name="crop_height4" id="cropHeight4">
-                        </div>
-                        <div id="imageContainer5">
-                            <label class="form-label">Image 5</label>
-                            <input class="form-control" type="file" id='image5' name='image5'>
-                            <div id="imageWrapper5" style="display: none;">
-                                <img id="imagePreview5" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">
-                                <button type="button" id="cropButton5" class="btn btn-primary small-btn">Crop</button>
-                            </div>
-                            <input type="hidden" name="crop_x5" id="cropX5">
-                            <input type="hidden" name="crop_y5" id="cropY5">
-                            <input type="hidden" name="crop_width5" id="cropWidth5">
-                            <input type="hidden" name="crop_height5" id="cropHeight5">
-                        </div>
-
+                        <label class="form-label">Images</label>
+                        <input class="form-control" id="image" type="file" name="image[]" multiple onchange="previewImages()">
+                        <!-- Canvas for image cropping -->
+                        <canvas id="cropped-preview" style="display: none;"></canvas>
+                        <div id="cropped-image-preview"></div>
+                        <div id="image-preview"></div>
+                        <input type="hidden" name="cropped_images_data" id="cropped-images-data">
                     </div>
                 </div> <!-- card end// -->
+<!--                <div class="card mb-4">-->
+<!--                    <div class="card-body">-->
+<!--                        <div id="imageContainer1">-->
+<!--                            <label class="form-label">Image 1</label>-->
+<!--                            <input class="form-control" type="file" id="image1" name="image1">-->
+<!--                            <div id="imageWrapper1" style="display: none;">-->
+<!--                                <img id="imagePreview1" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">-->
+<!--                                <button type="button" id="cropButton1" class="btn btn-primary small-btn">Crop</button>-->
+<!--                            </div>-->
+<!--                            <input type="hidden" name="crop_x1" id="cropX1">-->
+<!--                            <input type="hidden" name="crop_y1" id="cropY1">-->
+<!--                            <input type="hidden" name="crop_width1" id="cropWidth1">-->
+<!--                            <input type="hidden" name="crop_height1" id="cropHeight1">-->
+<!--                        </div>-->
+<!--                        <div id="imageContainer2">-->
+<!--                            <label class="form-label">Image 2</label>-->
+<!--                            <input class="form-control" type="file" id='image2' name='image2'>-->
+<!--                            <div id="imageWrapper2" style="display: none;">-->
+<!--                                <img id="imagePreview2" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">-->
+<!--                                <button type="button" id="cropButton2" class="btn btn-primary small-btn">Crop</button>-->
+<!--                            </div>-->
+<!--                            <input type="hidden" name="crop_x2" id="cropX2">-->
+<!--                            <input type="hidden" name="crop_y2" id="cropY2">-->
+<!--                            <input type="hidden" name="crop_width2" id="cropWidth2">-->
+<!--                            <input type="hidden" name="crop_height2" id="cropHeight2">-->
+<!--                        </div>-->
+<!--                        <div id="imageContainer3">-->
+<!--                            <label class="form-label">Image 3</label>-->
+<!--                            <input class="form-control" type="file" id='image3' name='image3'>-->
+<!--                            <div id="imageWrapper3" style="display: none;">-->
+<!--                                <img id="imagePreview3" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">-->
+<!--                                <button type="button" id="cropButton3" class="btn btn-primary small-btn">Crop</button>-->
+<!--                            </div>-->
+<!--                            <input type="hidden" name="crop_x3" id="cropX3">-->
+<!--                            <input type="hidden" name="crop_y3" id="cropY3">-->
+<!--                            <input type="hidden" name="crop_width3" id="cropWidth3">-->
+<!--                            <input type="hidden" name="crop_height3" id="cropHeight3">-->
+<!--                        </div>-->
+<!--                        <div id="imageContainer4">-->
+<!--                            <label class="form-label">Image 4</label>-->
+<!--                            <input class="form-control" type="file" id='image4' name='image4'>-->
+<!--                            <div id="imageWrapper4" style="display: none;">-->
+<!--                                <img id="imagePreview4" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">-->
+<!--                                <button type="button" id="cropButton4" class="btn btn-primary small-btn">Crop</button>-->
+<!--                            </div>-->
+<!--                            <input type="hidden" name="crop_x4" id="cropX4">-->
+<!--                            <input type="hidden" name="crop_y4" id="cropY4">-->
+<!--                            <input type="hidden" name="crop_width4" id="cropWidth4">-->
+<!--                            <input type="hidden" name="crop_height4" id="cropHeight4">-->
+<!--                        </div>-->
+<!--                        <div id="imageContainer5">-->
+<!--                            <label class="form-label">Image 5</label>-->
+<!--                            <input class="form-control" type="file" id='image5' name='image5'>-->
+<!--                            <div id="imageWrapper5" style="display: none;">-->
+<!--                                <img id="imagePreview5" src="#" alt="Preview" style="max-width: 100%; margin-top: 10px;">-->
+<!--                                <button type="button" id="cropButton5" class="btn btn-primary small-btn">Crop</button>-->
+<!--                            </div>-->
+<!--                            <input type="hidden" name="crop_x5" id="cropX5">-->
+<!--                            <input type="hidden" name="crop_y5" id="cropY5">-->
+<!--                            <input type="hidden" name="crop_width5" id="cropWidth5">-->
+<!--                            <input type="hidden" name="crop_height5" id="cropHeight5">-->
+<!--                        </div>-->
+
+<!--                    </div>-->
+<!--                </div> &lt;!&ndash; card end// &ndash;&gt;-->
                 
             </div>
             <div class="col-lg-3">
@@ -276,72 +289,185 @@
     // Call the function when the page loads
     window.onload = hideMessages;
 </script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var form = document.getElementById('productForm');
-        var croppers = [];
+    var files;
+    var currentFileIndex = 0;
+    var preview = document.getElementById('image-preview');
+    var cropper; // Define cropper globally
+    var previewCanvas = document.getElementById('cropped-preview');
+    var croppedImageDataList = []; // List to store cropped image data
 
-        function initializeCropper(imageIndex) {
-            var input = document.getElementById('image' + imageIndex);
-            var cropButton = document.getElementById('cropButton' + imageIndex);
-            var imageContainer = document.getElementById('imageContainer' + imageIndex);
-            var imageWrapper = document.getElementById('imageWrapper' + imageIndex);
-
-            var cropper;
-
-            input.addEventListener('change', function (e) {
-                var file = e.target.files[0];
-                var reader = new FileReader();
-
-                reader.onload = function (event) {
-                    // Show the image container
-                    imageContainer.style.display = 'block';
-
-                    // Show the image wrapper
-                    imageWrapper.style.display = 'block';
-
-                    var image = document.getElementById('imagePreview' + imageIndex);
-                    image.src = event.target.result;
-
-                    // Set up Cropper.js after the image has loaded
-                    image.onload = function () {
-                        croppers[imageIndex] = new Cropper(image, {
-                            aspectRatio: 16 / 9,  // Set your desired aspect ratio
-                            crop: function (event) {
-                                // Update hidden input fields with cropping data
-                                document.getElementById('cropX' + imageIndex).value = event.detail.x;
-                                document.getElementById('cropY' + imageIndex).value = event.detail.y;
-                                document.getElementById('cropWidth' + imageIndex).value = event.detail.width;
-                                document.getElementById('cropHeight' + imageIndex).value = event.detail.height;
-                            }
-                        });
-                    };
-                };
-
-                reader.readAsDataURL(file);
-            });
-
-            cropButton.addEventListener('click', function () {
-                // Trigger manual crop
-                croppers[imageIndex].crop();
-
-                // Hide the image wrapper
-                imageWrapper.style.display = 'none';
-            });
+    function previewImages() {
+        preview.innerHTML = '';
+        files = document.getElementById('image').files;
+        console.log("Total files:", files.length);
+        if (files.length > 0) {
+            displayNextImage();
         }
+    }
 
-        // Initialize croppers for each image
-        for (var i = 1; i <= 5; i++) {
-            initializeCropper(i);
+    function displayNextImage() {
+        console.log("Current file index:", currentFileIndex);
+        if (currentFileIndex < files.length) {
+            var file = files[currentFileIndex];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                console.log("File loaded:", file.name);
+                // Clear previous image and Cropper instance
+                if (cropper) {
+                    cropper.destroy();
+                    preview.removeChild(preview.lastElementChild);
+                }
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '200px'; // Adjust as needed
+                img.style.height = '200px'; // Adjust as needed
+                preview.appendChild(img);
+
+                // Initialize Cropper.js
+                cropper = new Cropper(img, {
+                    aspectRatio: 1, // Adjust as needed
+                    crop: function(event) {
+                        var croppedCanvas = cropper.getCroppedCanvas();
+                        if (croppedCanvas) {
+                            displayCroppedImage(croppedCanvas);
+                            onCropComplete();
+                        }
+                    }
+                });
+
+                // Add button to save cropped image
+                var saveButton = document.createElement('button');
+                saveButton.textContent = 'Save Cropped Image';
+                saveButton.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent form submission
+                    var croppedImageData = cropper.getCroppedCanvas().toDataURL('image/jpeg');
+                    console.log('Cropped Image Data:', croppedImageData);
+                    croppedImageDataList.push(croppedImageData); // Add cropped image data to the list
+                    console.log('Cropped Image List:', croppedImageDataList);
+                    currentFileIndex++;
+                    displayNextImage();
+                    if (currentFileIndex === files.length) {
+                        hideCropperInterface();
+                        saveButton.style.display = 'none';
+                        preview.appendChild(previewCanvas);
+                        saveCroppedImages(); // Call function to save cropped images when all images are processed
+                    }
+                });
+                preview.appendChild(saveButton);
+            }
+            reader.readAsDataURL(file);
         }
+    }
 
-        form.addEventListener('submit', function () {
-            // Do additional form validation if needed
-            // Submit the form
-            form.submit();
-        });
-    });
+    function displayCroppedImage(croppedCanvas) {
+        // Display the cropped image in a preview area
+        var preview = document.getElementById('cropped-image-preview');
+        preview.innerHTML = ''; // Clear previous preview
+        var croppedImg = document.createElement('img');
+        croppedImg.src = croppedCanvas.toDataURL(); // Set the cropped image data as source
+        croppedImg.style.width = '200px'; // Set width to 250px
+        croppedImg.style.height = '200px'; // Set height to 250px
+        preview.appendChild(croppedImg);
+    }
+
+    function hideCropperInterface() {
+        var cropperContainer = document.querySelector('.cropper-container');
+        if (cropperContainer) {
+            cropperContainer.style.display = 'none'; // Hide cropper container
+        }
+    }
+
+    function saveCroppedImages() {
+        console.log('Inside saveCroppedImages function');
+        console.log('New Cropped Images:', croppedImageDataList);
+
+        // Serialize the cropped image data as JSON string
+        var croppedImagesJSON = JSON.stringify(croppedImageDataList);
+        console.log('Cropped Images JSON:', croppedImagesJSON.slice(0,100));
+
+        // Assign the JSON string to the hidden input field
+        var hiddenInput = document.getElementById('cropped-images-data');
+        console.log('Hidden Input Field:', hiddenInput);
+        hiddenInput.value = croppedImagesJSON;
+
+        // Display the hidden input field value in the console
+        console.log('Hidden Input Field Value:', hiddenInput.value);
+    }
+
+    function onCropComplete() {
+        console.log('Image cropped successfully');
+        // Optionally, display feedback messages or update UI
+    }
 </script>
+
+<!--<script>-->
+<!--    document.addEventListener('DOMContentLoaded', function () {-->
+<!--        var form = document.getElementById('productForm');-->
+<!--        var croppers = [];-->
+
+<!--        function initializeCropper(imageIndex) {-->
+<!--            var input = document.getElementById('image' + imageIndex);-->
+<!--            var cropButton = document.getElementById('cropButton' + imageIndex);-->
+<!--            var imageContainer = document.getElementById('imageContainer' + imageIndex);-->
+<!--            var imageWrapper = document.getElementById('imageWrapper' + imageIndex);-->
+
+<!--            var cropper;-->
+
+<!--            input.addEventListener('change', function (e) {-->
+<!--                var file = e.target.files[0];-->
+<!--                var reader = new FileReader();-->
+
+<!--                reader.onload = function (event) {-->
+<!--                    // Show the image container-->
+<!--                    imageContainer.style.display = 'block';-->
+
+<!--                    // Show the image wrapper-->
+<!--                    imageWrapper.style.display = 'block';-->
+
+<!--                    var image = document.getElementById('imagePreview' + imageIndex);-->
+<!--                    image.src = event.target.result;-->
+
+<!--                    // Set up Cropper.js after the image has loaded-->
+<!--                    image.onload = function () {-->
+<!--                        croppers[imageIndex] = new Cropper(image, {-->
+<!--                            aspectRatio: 16 / 9,  // Set your desired aspect ratio-->
+<!--                            crop: function (event) {-->
+<!--                                // Update hidden input fields with cropping data-->
+<!--                                document.getElementById('cropX' + imageIndex).value = event.detail.x;-->
+<!--                                document.getElementById('cropY' + imageIndex).value = event.detail.y;-->
+<!--                                document.getElementById('cropWidth' + imageIndex).value = event.detail.width;-->
+<!--                                document.getElementById('cropHeight' + imageIndex).value = event.detail.height;-->
+<!--                            }-->
+<!--                        });-->
+<!--                    };-->
+<!--                };-->
+
+<!--                reader.readAsDataURL(file);-->
+<!--            });-->
+
+<!--            cropButton.addEventListener('click', function () {-->
+<!--                // Trigger manual crop-->
+<!--                croppers[imageIndex].crop();-->
+
+<!--                // Hide the image wrapper-->
+<!--                imageWrapper.style.display = 'none';-->
+<!--            });-->
+<!--        }-->
+
+<!--        // Initialize croppers for each image-->
+<!--        for (var i = 1; i <= 5; i++) {-->
+<!--            initializeCropper(i);-->
+<!--        }-->
+
+<!--        form.addEventListener('submit', function () {-->
+<!--            // Do additional form validation if needed-->
+<!--            // Submit the form-->
+<!--            form.submit();-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 
 
 {% endblock content %}

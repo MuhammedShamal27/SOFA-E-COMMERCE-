@@ -17,7 +17,11 @@ from io import BytesIO
 import re
 from django.utils import timezone
 from datetime import datetime
-
+from django.core.files.base import ContentFile
+import base64
+import json
+from django.conf import settings
+import os
 # Create your views here.
 
 
@@ -170,7 +174,7 @@ def add_product(request):
         return redirect("admin_login")
 
     categories = Category.objects.filter(is_soft_delete=False)
-    errors_occurred = False
+    # errors_occurred = False
 
     if request.method == "POST":
         product_name = request.POST.get("product_name")
@@ -184,24 +188,37 @@ def add_product(request):
         color = request.POST.get("colors")
         category_id = request.POST.get("category")
 
-        images = [request.FILES.get(f"image{i}") for i in range(1, 6)]
-        crops = [
-            (
-                float(request.POST.get(f"crop_x{i}", 0))
-                if request.POST.get(f"crop_x{i}")
-                else 0,
-                float(request.POST.get(f"crop_y{i}", 0))
-                if request.POST.get(f"crop_y{i}")
-                else 0,
-                float(request.POST.get(f"crop_width{i}", 0))
-                if request.POST.get(f"crop_width{i}")
-                else 0,
-                float(request.POST.get(f"crop_height{i}", 0))
-                if request.POST.get(f"crop_height{i}")
-                else 0,
-            )
-            for i in range(1, 6)
-        ]
+        images = request.FILES.getlist('image[]')
+
+        cropped_images_data = request.POST.get('cropped_images_data')
+
+        if cropped_images_data:
+            cropped_images_list = json.loads(cropped_images_data)
+        else:
+            cropped_images_list = []
+
+        cropped_images_dir = os.path.join(settings.MEDIA_ROOT, 'cropped_images')
+        os.makedirs(cropped_images_dir, exist_ok=True)
+
+
+        # images = [request.FILES.get(f"image{i}") for i in range(1, 6)]
+        # crops = [
+        #     (
+        #         float(request.POST.get(f"crop_x{i}", 0))
+        #         if request.POST.get(f"crop_x{i}")
+        #         else 0,
+        #         float(request.POST.get(f"crop_y{i}", 0))
+        #         if request.POST.get(f"crop_y{i}")
+        #         else 0,
+        #         float(request.POST.get(f"crop_width{i}", 0))
+        #         if request.POST.get(f"crop_width{i}")
+        #         else 0,
+        #         float(request.POST.get(f"crop_height{i}", 0))
+        #         if request.POST.get(f"crop_height{i}")
+        #         else 0,
+        #     )
+        #     for i in range(1, 6)
+        # ]
 
         # Validate form inputs
 
@@ -235,9 +252,19 @@ def add_product(request):
             messages.error(request, "Description name should contain only alphanumeric characters and spaces between words")
             return redirect("add_product")
 
-        if not re.match(r'^[a-zA-Z0-9]+$', material):
-            messages.error(request, "Material should contain only alphanumeric characters")
+        if len(images) != 5:
+            messages.error(request, 'Please select exactly 5 images.')
+            return redirect('add_product')
+
+        if len(images) > 5:
+            messages.error(request, 'You can upload up to 5 images only')
+            return redirect('add_product')
+
+        if not re.match(r'^[a-zA-Z0-9]+( [a-zA-Z0-9]+)?$', material.strip()):
+            messages.error(request,
+                           "Material should contain only alphanumeric characters and at most one space between words")
             return redirect("add_product")
+
         try:
             orginal_price = int(orginal_price)
             offer_price = int(offer_price)
@@ -284,28 +311,37 @@ def add_product(request):
             colors=color,
         )
 
+        for index, image_data in enumerate(cropped_images_list, start=1):
+            # Decode Base64 image data
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+            image_data_decoded = base64.b64decode(imgstr)
+            # Save the decoded image to the corresponding product image field
+            product_image_field = f'product_image{index}'
+            setattr(product, product_image_field, ContentFile(image_data_decoded, name=f'cropped_image_{index}.{ext}'))
 
-        for i, (image, crop) in enumerate(zip(images, crops), start=1):
-            try:
-                image_content = BytesIO(image.read())
-                original_image = Image.open(image_content)
-                cropped_image = original_image.crop(crop)
-                cropped_image_content = BytesIO()
-                cropped_image.save(cropped_image_content, format="JPEG")
 
-                # Ensure the cropped image content is saved as a valid Django file
-                product_image_field = getattr(product, f"product_image{i}")
-                product_image_field.save(
-                    f"image{i}.jpg",
-                    ContentFile(cropped_image_content.getvalue()),
-                    save=False,
-                )
-            except Exception as e:
-                messages.error(request, f"Error processing image {i}: {str(e)}")
-                return redirect("add_product")
-        if errors_occurred:
-            messages.error(request, "Errors occurred during image processing. Please try again.")
-            return redirect("add_product")
+        # for i, (image, crop) in enumerate(zip(images, crops), start=1):
+        #     try:
+        #         image_content = BytesIO(image.read())
+        #         original_image = Image.open(image_content)
+        #         cropped_image = original_image.crop(crop)
+        #         cropped_image_content = BytesIO()
+        #         cropped_image.save(cropped_image_content, format="JPEG")
+        #
+        #         # Ensure the cropped image content is saved as a valid Django file
+        #         product_image_field = getattr(product, f"product_image{i}")
+        #         product_image_field.save(
+        #             f"image{i}.jpg",
+        #             ContentFile(cropped_image_content.getvalue()),
+        #             save=False,
+        #         )
+        #     except Exception as e:
+        #         messages.error(request, f"Error processing image {i}: {str(e)}")
+        #         return redirect("add_product")
+        # if errors_occurred:
+        #     messages.error(request, "Errors occurred during image processing. Please try again.")
+        #     return redirect("add_product")
 
 
         product.save()
@@ -438,7 +474,6 @@ from django.template.defaulttags import register
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
-
 def edit_products(request, p_id):
     if not request.user.is_superuser:
         return redirect("admin_login")
@@ -475,11 +510,62 @@ def edit_products(request, p_id):
         product.category = category
         product.colors = color
 
-        # Check for new images and update if provided
-        for i in range(1, 6):
-            image_key = f"product_image{i}"
-            if f"image{i}" in request.FILES:
-                setattr(product, image_key, request.FILES.get(f"image{i}"))
+        # Check if any new images are uploaded
+        new_images_uploaded = any(f"image{i}" in request.FILES for i in range(1, 6))
+
+        # Handle new images or updates to existing images
+        if new_images_uploaded:
+            # Handle new images and update existing ones
+            for i in range(1, 6):
+                image_key = f"product_image{i}"
+                crop_x = request.POST.get(f"crop_x{i}", '')  # Handle empty string
+                if f"image{i}" in request.FILES:
+                    setattr(product, image_key, request.FILES.get(f"image{i}"))
+
+                    # Perform cropping if required
+                    if crop_x:  # Check if cropping data exists
+                        crop = (
+                            float(request.POST.get(f"crop_x{i}")),
+                            float(request.POST.get(f"crop_y{i}")),
+                            float(request.POST.get(f"crop_width{i}")),
+                            float(request.POST.get(f"crop_height{i}")),
+                        )
+
+                        if all(value == 0 for value in crop):
+                            continue
+
+                        existing_image = getattr(product, image_key)
+                        original_image = Image.open(existing_image)
+                        cropped_image = original_image.crop(crop)
+
+                        # Save cropped image
+                        cropped_image_io = BytesIO()
+                        cropped_image.save(cropped_image_io, format='JPEG')
+                        existing_image.save(existing_image.name, ContentFile(cropped_image_io.getvalue()), save=False)
+        else:
+            # Update product details without changing existing images
+            for i in range(1, 6):
+                image_key = f"product_image{i}"
+                crop_x = request.POST.get(f"crop_x{i}", '')  # Handle empty string
+                if crop_x:  # Check if cropping data exists
+                    crop = (
+                        float(request.POST.get(f"crop_x{i}")),
+                        float(request.POST.get(f"crop_y{i}")),
+                        float(request.POST.get(f"crop_width{i}")),
+                        float(request.POST.get(f"crop_height{i}")),
+                    )
+
+                    if all(value == 0 for value in crop):
+                        continue
+
+                    existing_image = getattr(product, image_key)
+                    original_image = Image.open(existing_image)
+                    cropped_image = original_image.crop(crop)
+
+                    # Save cropped image
+                    cropped_image_io = BytesIO()
+                    cropped_image.save(cropped_image_io, format='JPEG')
+                    existing_image.save(existing_image.name, ContentFile(cropped_image_io.getvalue()), save=False)
 
         if not (
             product_name
@@ -503,9 +589,10 @@ def edit_products(request, p_id):
             messages.error(request, "Description name should contain only alphanumeric characters and spaces between words")
             return redirect("edit_products", p_id=p_id)
 
-        if not re.match(r'^[a-zA-Z0-9]+$', material):
-            messages.error(request, "Material should contain only alphanumeric characters")
-            return redirect("edit_products", p_id=p_id)
+        if not re.match(r'^[a-zA-Z0-9]+( [a-zA-Z0-9]+)?$', material.strip()):
+            messages.error(request,
+                           "Material should contain only alphanumeric characters and at most one space between words")
+            return redirect("add_product")
 
         try:
             orginal_price_str = request.POST.get("orginal_price")
@@ -546,6 +633,7 @@ def edit_products(request, p_id):
 
         return redirect("admin_product_list")
 
+    # If it's a GET request, render the form with existing product data
     # Create a dictionary to store images
     images = {}
     for i in range(1, 6):
@@ -557,7 +645,6 @@ def edit_products(request, p_id):
         "adminapp/edit_products.html",
         {"product": product, "category_all": category_all, "images": images},
     )
-
 
 # def edit_products(request, p_id):
 #     if not request.user.is_superuser:

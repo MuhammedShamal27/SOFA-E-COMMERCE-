@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'sofa.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sofa',    
+        'NAME': 'store',
         'USER': 'postgres',   
         'PASSWORD': '2706',   
         'HOST': 'localhost',    
@@ -168,6 +168,7 @@ EMAIL_HOST_PASSWORD='xrwv pmxt tbkf nhbn'
 EMAIL_PORT=587
 
 LOGIN_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL='/'
 
 
 MEDIA_URL='/media/'
